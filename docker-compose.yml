@@ -6,3 +6,13 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+
+  database:
+    image: postgres:12.2
+    environment:
+      POSTGRES_PASSWORD:
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
