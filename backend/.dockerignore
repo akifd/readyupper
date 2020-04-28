@@ -1,3 +1,5 @@
 .dockerignore
+__pycache__
+*.egg-info
 env
 Dockerfile
