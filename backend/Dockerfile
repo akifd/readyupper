@@ -1,8 +1,9 @@
 FROM python:3.8
 WORKDIR /code
-RUN mkdir app
-CMD ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "readyupper.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
 
-COPY requirements.txt /code
+COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY app /code/app
+COPY . .
+
+RUN pip install -e ".[dev]"

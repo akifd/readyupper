@@ -11,6 +11,10 @@ services:
       DB_HOST:
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/setup.py:/code/setup.py
+      - ./backend/alembic.ini:/code/alembic.ini
+      - ./backend/readyupper:/code/readyupper
 
   database:
     image: postgres:12.2
