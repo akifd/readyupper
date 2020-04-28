@@ -23,5 +23,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    tty: true
+    volumes:
+      - ./frontend/readyupper/src:/code/readyupper/src
+
 volumes:
   postgres_data:
