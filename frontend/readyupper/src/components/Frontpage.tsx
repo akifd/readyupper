@@ -44,7 +44,7 @@ function Frontpage() {
 
   return (
     <Grid container spacing={3}>
-      <Grid item sm={12} md={6}>
+      <Grid item xs={12} md={6}>
         <Card>
           <CardContent>
             <Typography component="h2" variant="h4" gutterBottom>
@@ -58,7 +58,7 @@ function Frontpage() {
             <ul>
               <li>Free and fast to use</li>
               <li>No registration</li>
-              <li>Anyone can edit calendars</li>
+              <li>Anyone with link can edit the calendar</li>
             </ul>
             <Typography component="p" gutterBottom>
               Calendars are automatically deleted after 3 months.
@@ -66,7 +66,7 @@ function Frontpage() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item sm={12} md={6}>
+      <Grid item xs={12} md={6}>
         <Card>
           <form method="post" onSubmit={createCalendar}>
             <CardContent>
