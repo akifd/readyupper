@@ -1,24 +1,36 @@
-import React from 'react';
+import React from 'react'
 
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 
-import './App.css';
+import Container from '@material-ui/core/Container'
+import Typography from '@material-ui/core/Typography'
+
+import './App.css'
 import Frontpage from './components/Frontpage'
+import CalendarDetail from './components/CalendarDetail'
 
 
 function App() {
   return (
-    <div className="app">
-      <Container className="App" maxWidth="md">
-        <Typography variant="h1" component="h1" gutterBottom align="center">
-          Readyupper
-        </Typography>
+    <Router>
+      <div className="app">
+        <Container className="App" maxWidth="md">
+          <Typography variant="h1" component="h1" gutterBottom align="center">
+            Readyupper
+          </Typography>
 
-        <Frontpage />
-      </Container>
-    </div>
-  );
+          <Switch>
+            <Route path="/:calendarHash">
+              <CalendarDetail />
+            </Route>
+            <Route path="/">
+              <Frontpage />
+            </Route>
+          </Switch>
+        </Container>
+      </div>
+    </Router>
+  )
 }
 
-export default App;
+export default App

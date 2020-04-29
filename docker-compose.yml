@@ -27,8 +27,10 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
-    tty: true
+    stdin_open: true
     volumes:
+      - ./frontend/readyupper/package.json:/code/readyupper/package.json
+      - ./frontend/readyupper/package-lock.json:/code/readyupper/package-lock.json
       - ./frontend/readyupper/src:/code/readyupper/src
 
 volumes:
