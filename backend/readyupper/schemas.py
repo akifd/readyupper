@@ -13,8 +13,6 @@ class Calendar(BaseModel):
 
 class CalendarCreate(BaseModel):
     name: str
-    url_hash: str
-    password: str = ""
 
     class Config:
         orm_mode = True
