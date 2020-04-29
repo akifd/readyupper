@@ -17,5 +17,5 @@ def create_calendar(db: Session, name: str):
     # TODO: Hash collision protection.
     db_calendar = models.Calendar(name=name, url_hash=uuid4().hex)
     db.add(db_calendar)
-    db.commit()
+    db.flush()
     return db_calendar

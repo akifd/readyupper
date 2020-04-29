@@ -1,8 +1,10 @@
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from .database import DATABASE_SETTINGS, database_url, Base
+from .main import app, get_db
 
 
 @pytest.fixture(scope="session")
@@ -34,3 +36,13 @@ def db(TestSession):
     yield session
     session.rollback()
     session.close()
+
+
+@pytest.fixture
+def test_client(db, mocker):
+    def get_test_db():
+        yield db
+
+    app.dependency_overrides[get_db] = get_test_db
+
+    return TestClient(app)

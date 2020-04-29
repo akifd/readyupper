@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -5,7 +6,7 @@ class Calendar(BaseModel):
     id: int
     name: str
     url_hash: str
-    password: str = ""
+    created: datetime = datetime.now
 
     class Config:
         orm_mode = True
