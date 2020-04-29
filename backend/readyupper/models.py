@@ -9,4 +9,3 @@ class Calendar(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     url_hash = Column(String(32), nullable=False, unique=True)
-    password = Column(String(255), nullable=False, default="")
