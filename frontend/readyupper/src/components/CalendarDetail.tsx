@@ -38,7 +38,7 @@ function CalendarDetail() {
     </Typography>
   }
 
-  if (calendar.hasOwnProperty("error"))
+  if (error)
     return (
       <div>
         <Typography variant="h2" component="h2" gutterBottom align="center">
