@@ -8,11 +8,14 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Grid from '@material-ui/core/Grid'
 
+import { Redirect } from 'react-router-dom'
+
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
 
 function Frontpage() {
-  const [calendarName, setCalendarName] = useState("");
+  const [calendarName, setCalendarName] = useState("")
+  const [createdCalendar, setCreatedCalendar] = useState()
 
   function handleCalendarNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setCalendarName(event.currentTarget.value)
@@ -24,16 +27,20 @@ function Frontpage() {
     if (!calendarName)
       return
 
+    // TODO: DRY the url to the backend.
     let promise = axios.post("http://localhost:8000/calendar/", {name: calendarName})
 
     promise.then((response: AxiosResponse) => {
-      // TODO
+      setCreatedCalendar(response.data)
     })
 
     promise.catch((error: AxiosError) => {
       // TODO
     })
   }
+
+  if (createdCalendar)
+    return <Redirect to={"/" + createdCalendar.url_hash} />
 
   return (
     <Grid container spacing={3}>
