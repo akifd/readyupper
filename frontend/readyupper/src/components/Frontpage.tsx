@@ -40,7 +40,7 @@ function Frontpage() {
   }
 
   if (createdCalendar)
-    return <Redirect to={"/" + createdCalendar.url_hash} />
+    return <Redirect to={"/" + createdCalendar.url_hash + "/"} />
 
   return (
     <Grid container spacing={3}>
