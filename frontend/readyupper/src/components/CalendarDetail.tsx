@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Typography from '@material-ui/core/Typography'
 
@@ -12,11 +12,21 @@ function CalendarDetail() {
   let [calendar, setCalendar] = useState()
   let [error, setError] = useState()
 
+  useEffect(() => {
+    if (calendar)
+      document.title = "Readyupper - " + calendar.name
+
+    return function cleanup() {
+      document.title = "Readyupper"
+    }
+  })
+
   if (!calendar) {
     let promise = axios.get("http://localhost:8000/calendar/" + urlHash)
 
     promise.then((response: AxiosResponse) => {
       setCalendar(response.data)
+      document.title = "Readyupper - " + response.data.name
     })
 
     promise.catch((error: AxiosError) => {
