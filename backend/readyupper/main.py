@@ -24,11 +24,6 @@ def get_db():
         db.close()
 
 
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
-
-
 @app.get("/calendar/{url_hash}/", response_model=schemas.Calendar)
 def read_calendar(url_hash: str, db: Session = Depends(get_db)):
     return operations.get_calendar_by_hash(db, url_hash)
