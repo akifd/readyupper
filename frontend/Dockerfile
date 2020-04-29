@@ -4,5 +4,3 @@ WORKDIR /code/readyupper
 COPY readyupper/package.json .
 RUN npm install
 COPY readyupper .
-
-CMD ["npm", "start"]
