@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import Typography from '@material-ui/core/Typography'
 
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
@@ -59,7 +59,10 @@ function CalendarDetail() {
         { urlHash }
       </Typography>
       <Typography component="p" gutterBottom align="center">
-        Copy the link to this page and share it to the participants. <br />
+        Copy the link to this page and share it to the participants.
+      </Typography>
+      <Typography component="p" gutterBottom align="center">
+        Back to <Link to="/">frontpage</Link>.
       </Typography>
     </div>
   )
