@@ -20,6 +20,7 @@ def get_db():
     try:
         db = SessionLocal()
         yield db
+        db.commit()
     finally:
         db.close()
 

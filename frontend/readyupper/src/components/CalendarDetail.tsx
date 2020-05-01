@@ -1,44 +1,47 @@
 import React, { useState, useEffect } from 'react'
-
+import Immutable from 'immutable'
 import Typography from '@material-ui/core/Typography'
-
 import { Link, useParams } from 'react-router-dom'
-
 import axios, { AxiosResponse, AxiosError } from 'axios'
+
+import { Calendar } from '../interfaces'
+
+
+function setTitle(calendar: Calendar): () => void {
+  if (calendar)
+    document.title = "Readyupper - " + calendar.name
+
+  return function cleanup() {
+    document.title = "Readyupper"
+  }
+}
+
+
+function fetchData(urlHash: string, data: Immutable.Map<string, Calendar>, setData: Function, setError: Function) {
+  let promise = axios.get("http://localhost:8000/calendar/" + urlHash)
+
+  promise.then((response: AxiosResponse) => {
+    setData(data.set(urlHash, response.data))
+    setTitle(response.data)
+  })
+
+  promise.catch((error: AxiosError) => {
+    setError("An error occurred. Try loading the page again soon.")
+  })
+}
 
 
 function CalendarDetail() {
   let { urlHash } = useParams()
-  let [calendar, setCalendar] = useState()
+  let [data, setData] = useState(Immutable.Map<string, Calendar>())
   let [error, setError] = useState()
+  let calendar: Calendar = data.get(urlHash)
 
   useEffect(() => {
-    if (calendar)
-      document.title = "Readyupper - " + calendar.name
-
-    return function cleanup() {
-      document.title = "Readyupper"
-    }
+    return setTitle(calendar)
   })
 
-  if (!calendar) {
-    let promise = axios.get("http://localhost:8000/calendar/" + urlHash)
-
-    promise.then((response: AxiosResponse) => {
-      setCalendar(response.data)
-      document.title = "Readyupper - " + response.data.name
-    })
-
-    promise.catch((error: AxiosError) => {
-      setError("An error occurred. Try loading the page again soon.")
-    })
-
-    return <Typography variant="h2" component="h2" gutterBottom align="center">
-      { "Loading..." }
-    </Typography>
-  }
-
-  if (error)
+  if (error) {
     return (
       <div>
         <Typography variant="h2" component="h2" gutterBottom align="center">
@@ -49,6 +52,15 @@ function CalendarDetail() {
         </Typography>
       </div>
     )
+  }
+
+  if (!calendar) {
+    fetchData(urlHash, data, setData, setError)
+
+    return <Typography variant="h2" component="h2" gutterBottom align="center">
+      { "Loading..." }
+    </Typography>
+  }
 
   return (
     <div>
