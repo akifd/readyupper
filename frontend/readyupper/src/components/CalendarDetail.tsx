@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Immutable from 'immutable'
 import Typography from '@material-ui/core/Typography'
 import { Link, useParams } from 'react-router-dom'
 import axios, { AxiosResponse, AxiosError } from 'axios'
@@ -17,12 +16,13 @@ function setTitle(calendar: Calendar): () => void {
 }
 
 
-function fetchData(urlHash: string, data: Immutable.Map<string, Calendar>, setData: Function, setError: Function) {
-  let promise = axios.get("http://localhost:8000/calendar/" + urlHash)
+function fetchCalendar(urlHash: string, setCalendar: Function, setError: Function) {
+  setCalendar(null)
+
+  let promise = axios.get("http://localhost:8000/calendar/" + urlHash + "/")
 
   promise.then((response: AxiosResponse) => {
-    setData(data.set(urlHash, response.data))
-    setTitle(response.data)
+    setCalendar(response.data)
   })
 
   promise.catch((error: AxiosError) => {
@@ -33,13 +33,11 @@ function fetchData(urlHash: string, data: Immutable.Map<string, Calendar>, setDa
 
 function CalendarDetail() {
   let { urlHash } = useParams()
-  let [data, setData] = useState(Immutable.Map<string, Calendar>())
+  let [calendar, setCalendar] = useState()
   let [error, setError] = useState()
-  let calendar: Calendar = data.get(urlHash)
 
-  useEffect(() => {
-    return setTitle(calendar)
-  })
+  useEffect(() => fetchCalendar(urlHash, setCalendar, setError), [urlHash])
+  useEffect(() => setTitle(calendar), [calendar])
 
   if (error) {
     return (
@@ -55,11 +53,11 @@ function CalendarDetail() {
   }
 
   if (!calendar) {
-    fetchData(urlHash, data, setData, setError)
-
-    return <Typography variant="h2" component="h2" gutterBottom align="center">
-      { "Loading..." }
-    </Typography>
+    return (
+      <Typography variant="h2" component="h2" gutterBottom align="center">
+        { "Loading..." }
+      </Typography>
+    )
   }
 
   return (
