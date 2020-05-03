@@ -41,6 +41,11 @@ def test_create_calendar(db):
     assert calendar.created
 
 
+def test_create_calendar_without_name(db):
+    with pytest.raises(ValueError):
+        operations.create_calendar(db, name="")
+
+
 def test_set_participants(db, calendar):
     assert db.query(Participant).count() == 0
     operations.set_participants(db, calendar, ["Jack", "John"])

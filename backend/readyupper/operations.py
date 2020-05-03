@@ -15,6 +15,9 @@ def get_calendar_by_hash(db: Session, url_hash: str):
 
 
 def create_calendar(db: Session, name: str):
+    if len(name) < 3:
+        raise ValueError("Calendar name must be at least 3 characters long.")
+
     # TODO: Hash collision protection.
     db_calendar = models.Calendar(name=name, url_hash=uuid4().hex)
     db.add(db_calendar)
