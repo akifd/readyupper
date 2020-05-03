@@ -67,3 +67,13 @@ def test_set_participants_with_existing_rows(db, calendar):
     assert participants[0].name == "Jack"
     assert participants[1].calendar_id == calendar.id
     assert participants[1].name == "Mat"
+
+
+def test_set_participants_to_empty(db, calendar):
+    calendar.participants = [Participant(calendar=calendar, name="Jack"),
+                             Participant(calendar=calendar, name="John")]
+    db.flush()
+
+    assert db.query(Participant).count() == 2
+    operations.set_participants(db, calendar, [])
+    assert db.query(Participant).count() == 0
