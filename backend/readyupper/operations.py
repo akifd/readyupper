@@ -27,7 +27,10 @@ def set_participants(db: Session, calendar: models.Calendar, participants: List[
         .filter(models.Participant.calendar_id == calendar.id) \
         .delete()
 
-    db.add_all([
-        models.Participant(calendar_id=calendar.id, name=name)
-        for name in participants
-    ])
+    participants = [models.Participant(calendar_id=calendar.id, name=name)
+                    for name in participants]
+
+    db.add_all(participants)
+    db.flush()
+
+    return participants

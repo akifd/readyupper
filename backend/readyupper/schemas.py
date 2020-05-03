@@ -17,3 +17,13 @@ class CalendarCreate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Participant(BaseModel):
+    id: int
+    calendar_id: int
+    name: str
+    created: datetime = datetime.now
+
+    class Config:
+        orm_mode = True
