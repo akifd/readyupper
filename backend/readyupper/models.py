@@ -14,7 +14,8 @@ class Calendar(Base):
     created = Column(DateTime, nullable=False, server_default=func.now())
 
     participants = relationship("Participant", order_by=lambda: Participant.id,
-                                back_populates="calendar")
+                                back_populates="calendar",
+                                cascade="all, delete, delete-orphan")
 
 
 class Participant(Base):

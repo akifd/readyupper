@@ -1,3 +1,4 @@
+from typing import List
 from uuid import uuid4
 
 from sqlalchemy.orm import Session
@@ -19,3 +20,14 @@ def create_calendar(db: Session, name: str):
     db.add(db_calendar)
     db.flush()
     return db_calendar
+
+
+def set_participants(db: Session, calendar: models.Calendar, participants: List[str]):
+    db.query(models.Participant) \
+        .filter(models.Participant.calendar_id == calendar.id) \
+        .delete()
+
+    db.add_all([
+        models.Participant(calendar_id=calendar.id, name=name)
+        for name in participants
+    ])

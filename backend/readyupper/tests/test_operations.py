@@ -1,17 +1,8 @@
-import json
 import pytest
 from sqlalchemy.orm.exc import NoResultFound
 
-from . import operations, schemas
-from .models import Calendar
-
-
-@pytest.fixture
-def calendar(db):
-    calendar = Calendar(name="Test calendar", url_hash="abcdefg")
-    db.add(calendar)
-    db.flush()
-    return calendar
+from readyupper import operations
+from readyupper.models import Calendar, Participant
 
 
 def test_get_calendar(db, calendar):
@@ -50,28 +41,29 @@ def test_create_calendar(db):
     assert calendar.created
 
 
-def test_view_read_calendar(test_client, calendar):
-    response = test_client.get(f"/calendar/{calendar.url_hash}/")
+def test_set_participants(db, calendar):
+    assert db.query(Participant).count() == 0
+    operations.set_participants(db, calendar, ["Jack", "John"])
+    assert db.query(Participant).count() == 2
 
-    assert response.status_code == 200
-    data = response.json()
-    assert data.keys() == {"id", "name", "url_hash", "created"}
-    assert data == json.loads(schemas.Calendar(**data).json())
+    participants = db.query(Participant).order_by(Participant.id).all()
+    assert participants[0].calendar_id == calendar.id
+    assert participants[0].name == "Jack"
+    assert participants[1].calendar_id == calendar.id
+    assert participants[1].name == "John"
 
 
-def test_view_create_calendar(test_client, db):
-    assert db.query(Calendar).count() == 0
+def test_set_participants_with_existing_rows(db, calendar):
+    calendar.participants = [Participant(calendar=calendar, name="Jack"),
+                             Participant(calendar=calendar, name="John")]
+    db.flush()
 
-    response = test_client.post("/calendar/", json={"name": "New calendar"})
+    assert db.query(Participant).count() == 2
+    operations.set_participants(db, calendar, ["Jack", "Mat"])
+    assert db.query(Participant).count() == 2
 
-    assert response.status_code == 200
-
-    data = response.json()
-    assert data.keys() == {"id", "name", "url_hash", "created"}
-    assert data == json.loads(schemas.Calendar(**data).json())
-
-    assert db.query(Calendar).count() == 1
-    calendar = db.query(Calendar).one()
-    assert calendar.name == "New calendar"
-    assert calendar.url_hash
-    assert calendar.created
+    participants = db.query(Participant).order_by(Participant.id).all()
+    assert participants[0].calendar_id == calendar.id
+    assert participants[0].name == "Jack"
+    assert participants[1].calendar_id == calendar.id
+    assert participants[1].name == "Mat"

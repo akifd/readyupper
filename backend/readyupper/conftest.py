@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from . import models
 from .database import DATABASE_SETTINGS, database_url, Base
 from .main import app, get_db
 
@@ -46,3 +47,11 @@ def test_client(db, mocker):
     app.dependency_overrides[get_db] = get_test_db
 
     return TestClient(app)
+
+
+@pytest.fixture
+def calendar(db):
+    calendar = models.Calendar(name="Test calendar", url_hash="abcdefg")
+    db.add(calendar)
+    db.flush()
+    return calendar
