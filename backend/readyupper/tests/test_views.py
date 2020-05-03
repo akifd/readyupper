@@ -30,6 +30,18 @@ def test_view_create_calendar(test_client, db):
     assert calendar.created
 
 
+def test_view_create_calendar_with_short_name(test_client, db):
+    response = test_client.post("/calendar/", json={"name": "AB"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [{
+            "loc": ["body", "calendar", "name"],
+            "msg": "Name must be at least 3 characters long.",
+            "type": "value_error",
+        }]
+    }
+
+
 def test_view_set_participants(test_client, db, calendar):
     assert db.query(models.Participant).count() == 0
 

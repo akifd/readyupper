@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class Calendar(BaseModel):
@@ -14,6 +14,13 @@ class Calendar(BaseModel):
 
 class CalendarCreate(BaseModel):
     name: str
+
+    @validator("name")
+    def name_minimum_length(cls, value):
+        if len(value) < 3:
+            raise ValueError("Name must be at least 3 characters long.")
+
+        return value
 
     class Config:
         orm_mode = True
