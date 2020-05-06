@@ -2,8 +2,8 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import schemas, operations, models
-from .models import Entry
+from . import schemas, operations
+from .models import Entry, Participant
 from .database import Session as SessionLocal
 
 
@@ -42,6 +42,14 @@ def create_participant(participant: schemas.ParticipantCreate,
     return operations.create_participant(db, participant.calendar_id, participant.name)
 
 
+@app.delete("/participants/{participant_id}/")
+def delete_participant(participant_id: int, db: Session = Depends(get_db)):
+    participant = db.query(Participant) \
+        .filter(Participant.id == participant_id) \
+        .one()
+    operations.delete_participant(db, participant)
+
+
 @app.post("/entries/", response_model=schemas.Entry)
 def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
     return operations.create_entry(db, entry.calendar_id, entry.timestamp)
@@ -49,7 +57,7 @@ def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
 
 @app.delete("/entries/{entry_id}/")
 def delete_entry(entry_id: int, db: Session = Depends(get_db)):
-    entry = db.query(models.Entry).filter(models.Entry.id == entry_id).one()
+    entry = db.query(Entry).filter(Entry.id == entry_id).one()
     operations.delete_entry(db, entry)
 
 

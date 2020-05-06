@@ -34,6 +34,11 @@ def create_participant(db: Session, calendar_id: int, name: str) -> Participant:
     return participant
 
 
+def delete_participant(db: Session, participant: Participant) -> None:
+    db.delete(participant)
+    db.flush()
+
+
 def create_entry(db: Session, calendar_id: int, timestamp) -> Entry:
     entry = Entry(calendar_id=calendar_id, timestamp=timestamp)
 

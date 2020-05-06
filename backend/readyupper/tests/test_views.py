@@ -79,6 +79,16 @@ def test_view_create_participant_with_short_name(db: Session, test_client: TestC
     }
 
 
+def test_view_delete_participant(db: Session, test_client: TestClient,
+                                 participant: Participant):
+    assert db.query(Participant).count() == 1
+
+    response = test_client.delete(f"/participants/{participant.id}/")
+
+    assert response.status_code == 200
+    assert db.query(Participant).count() == 0
+
+
 def test_view_create_entry(db: Session, test_client: TestClient,
                            calendar: Calendar):
     assert db.query(Entry).count() == 0

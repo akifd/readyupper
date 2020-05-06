@@ -65,3 +65,11 @@ def entry(db, calendar):
     calendar.entries = [entry]
     db.flush()
     return entry
+
+
+@pytest.fixture
+def participant(db, calendar):
+    participant = models.Participant(name="Jack")
+    calendar.participants = [participant]
+    db.flush()
+    return participant
