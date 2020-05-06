@@ -47,6 +47,7 @@ class Entry(BaseModel):
 
 
 class EntryCreate(BaseModel):
+    calendar_id: int
     timestamp: datetime
 
     class Config:

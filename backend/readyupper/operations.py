@@ -40,8 +40,8 @@ def set_participants(db: Session, calendar: models.Calendar, participants: List[
     return participants
 
 
-def create_entry(db: Session, calendar: models.Calendar, timestamp) -> models.Entry:
-    entry = models.Entry(calendar_id=calendar.id, timestamp=timestamp)
+def create_entry(db: Session, calendar_id: int, timestamp) -> models.Entry:
+    entry = models.Entry(calendar_id=calendar_id, timestamp=timestamp)
 
     db.add(entry)
     db.flush()

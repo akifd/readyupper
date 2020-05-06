@@ -45,12 +45,9 @@ def set_participants(calendar_id: int, participants: List[str],
     return operations.set_participants(db, calendar, participants)
 
 
-@app.post("/calendar/{calendar_id}/entries/",
-          response_model=schemas.Entry)
-def create_entry(calendar_id: int, entry: schemas.EntryCreate,
-                 db: Session = Depends(get_db)):
-    calendar = db.query(models.Calendar).filter(models.Calendar.id == calendar_id).one()
-    return operations.create_entry(db, calendar, entry.timestamp)
+@app.post("/entries/", response_model=schemas.Entry)
+def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
+    return operations.create_entry(db, entry.calendar_id, entry.timestamp)
 
 
 @app.delete("/entries/{entry_id}/")

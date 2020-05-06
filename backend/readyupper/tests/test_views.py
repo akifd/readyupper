@@ -73,8 +73,8 @@ def test_view_create_entry(db: Session, test_client: TestClient,
                            calendar: models.Calendar):
     assert db.query(models.Entry).count() == 0
 
-    response = test_client.post(f"/calendar/{calendar.id}/entries/",
-                                json={"timestamp": "2020-05-18 10:30:00"})
+    response = test_client.post("/entries/", json={"calendar_id": calendar.id,
+                                                   "timestamp": "2020-05-18 10:30:00"})
 
     assert response.status_code == 200
 

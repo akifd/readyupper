@@ -90,7 +90,7 @@ def test_set_participants_to_empty(db: Session, calendar: Calendar):
 def test_create_entry(db: Session, calendar: Calendar):
     timestamp = datetime(2020, 5, 18, 10, 30, 0)
 
-    operations.create_entry(db, calendar, timestamp)
+    operations.create_entry(db, calendar.id, timestamp)
 
     entry = db.query(Entry).one()
     assert entry.calendar_id == calendar.id
