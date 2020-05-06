@@ -1,9 +1,12 @@
 import json
 
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
 from readyupper import schemas, models
 
 
-def test_view_read_calendar(test_client, calendar):
+def test_view_read_calendar(test_client: TestClient, calendar: models.Calendar):
     response = test_client.get(f"/calendar/{calendar.url_hash}/")
 
     assert response.status_code == 200
@@ -12,7 +15,7 @@ def test_view_read_calendar(test_client, calendar):
     assert data == json.loads(schemas.Calendar(**data).json())
 
 
-def test_view_create_calendar(test_client, db):
+def test_view_create_calendar(db: Session, test_client: TestClient):
     assert db.query(models.Calendar).count() == 0
 
     response = test_client.post("/calendar/", json={"name": "New calendar"})
@@ -30,7 +33,7 @@ def test_view_create_calendar(test_client, db):
     assert calendar.created
 
 
-def test_view_create_calendar_with_short_name(test_client, db):
+def test_view_create_calendar_with_short_name(db: Session, test_client: TestClient):
     response = test_client.post("/calendar/", json={"name": "AB"})
     assert response.status_code == 422
     assert response.json() == {
@@ -42,7 +45,8 @@ def test_view_create_calendar_with_short_name(test_client, db):
     }
 
 
-def test_view_set_participants(test_client, db, calendar):
+def test_view_set_participants(db: Session, test_client: TestClient,
+                               calendar: models.Calendar):
     assert db.query(models.Participant).count() == 0
 
     response = test_client.post(f"/calendar/{calendar.id}/participants/",
@@ -65,7 +69,8 @@ def test_view_set_participants(test_client, db, calendar):
     assert data[1]["created"] is not None
 
 
-def test_view_create_entry(test_client, db, calendar):
+def test_view_create_entry(db: Session, test_client: TestClient,
+                           calendar: models.Calendar):
     assert db.query(models.Entry).count() == 0
 
     response = test_client.post(f"/calendar/{calendar.id}/entries/",
@@ -82,7 +87,7 @@ def test_view_create_entry(test_client, db, calendar):
     assert data["created"] is not None
 
 
-def test_view_delete_entry(test_client, db, entry):
+def test_view_delete_entry(db: Session, test_client: TestClient, entry: models.Entry):
     assert db.query(models.Entry).count() == 1
 
     response = test_client.delete(f"/entries/{entry.id}/")
