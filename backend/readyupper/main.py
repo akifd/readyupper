@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from . import schemas, operations, models
+from .models import Entry
 from .database import Session as SessionLocal
 
 
@@ -54,3 +55,9 @@ def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
 def delete_entry(entry_id: int, db: Session = Depends(get_db)):
     entry = db.query(models.Entry).filter(models.Entry.id == entry_id).one()
     operations.delete_entry(db, entry)
+
+
+@app.patch("/entries/{entry_id}/", response_model=schemas.Entry)
+def update_entry(entry_id: int, data: schemas.EntryUpdate, db: Session = Depends(get_db)):
+    entry = db.query(Entry).filter(Entry.id == entry_id).one()
+    return operations.update_entry(db, entry, data.timestamp)

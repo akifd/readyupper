@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -94,3 +95,16 @@ def test_view_delete_entry(db: Session, test_client: TestClient, entry: models.E
 
     assert response.status_code == 200
     assert db.query(models.Entry).count() == 0
+
+
+def test_view_update_entry(db: Session, test_client: TestClient, entry: models.Entry):
+    response = test_client.patch(f"/entries/{entry.id}/",
+                                 json={"timestamp": "2020-12-22 09:25:00"})
+
+    assert response.status_code == 200
+
+    entry = db.query(models.Entry).one()
+    assert entry.timestamp == datetime(2020, 12, 22, 9, 25, 0)
+
+    data = response.json()
+    assert data["timestamp"] == "2020-12-22T09:25:00"

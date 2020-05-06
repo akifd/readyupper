@@ -101,3 +101,12 @@ def test_delete_entry(db: Session, entry: Entry):
     assert db.query(Entry).count() == 1
     operations.delete_entry(db, entry)
     assert db.query(Entry).count() == 0
+
+
+def test_update_entry(db: Session, entry: Entry):
+    timestamp = datetime(2020, 5, 10, 18, 45, 0)
+
+    operations.update_entry(db, entry, timestamp)
+
+    entry = db.query(Entry).one()
+    assert entry.timestamp == datetime(2020, 5, 10, 18, 45, 0)

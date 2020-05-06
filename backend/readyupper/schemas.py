@@ -52,3 +52,10 @@ class EntryCreate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class EntryUpdate(BaseModel):
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from uuid import uuid4
 
@@ -52,3 +53,9 @@ def create_entry(db: Session, calendar_id: int, timestamp) -> models.Entry:
 def delete_entry(db: Session, entry: models.Entry) -> None:
     db.delete(entry)
     db.flush()
+
+
+def update_entry(db: Session, entry: models.Entry, timestamp: datetime) -> models.Entry:
+    entry.timestamp = timestamp
+    db.flush()
+    return entry
