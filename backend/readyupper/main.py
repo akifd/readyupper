@@ -52,5 +52,5 @@ def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
 
 @app.delete("/entries/{entry_id}/")
 def delete_entry(entry_id: int, db: Session = Depends(get_db)):
-    entry = db.query(models.Entry).one()
+    entry = db.query(models.Entry).filter(models.Entry.id == entry_id).one()
     operations.delete_entry(db, entry)
