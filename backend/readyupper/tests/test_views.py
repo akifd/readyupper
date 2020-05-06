@@ -89,6 +89,24 @@ def test_view_delete_participant(db: Session, test_client: TestClient,
     assert db.query(Participant).count() == 0
 
 
+def test_view_update_participant(db: Session, test_client: TestClient,
+                                 calendar: Calendar, participant: Participant):
+    response = test_client.patch(f"/participants/{participant.id}/",
+                                 json={"name": "John"})
+
+    assert response.status_code == 200
+
+    participant = db.query(Participant).one()
+    assert participant.name == "John"
+
+    data = response.json()
+    assert data.keys() == {"id", "calendar_id", "name", "created"}
+    assert data["id"] is not None
+    assert data["calendar_id"] == calendar.id
+    assert data["name"] == "John"
+    assert data["created"] is not None
+
+
 def test_view_create_entry(db: Session, test_client: TestClient,
                            calendar: Calendar):
     assert db.query(Entry).count() == 0
@@ -116,7 +134,8 @@ def test_view_delete_entry(db: Session, test_client: TestClient, entry: Entry):
     assert db.query(Entry).count() == 0
 
 
-def test_view_update_entry(db: Session, test_client: TestClient, entry: Entry):
+def test_view_update_entry(db: Session, test_client: TestClient, calendar: Calendar,
+                           entry: Entry):
     response = test_client.patch(f"/entries/{entry.id}/",
                                  json={"timestamp": "2020-12-22 09:25:00"})
 
@@ -126,4 +145,8 @@ def test_view_update_entry(db: Session, test_client: TestClient, entry: Entry):
     assert entry.timestamp == datetime(2020, 12, 22, 9, 25, 0)
 
     data = response.json()
+    assert data.keys() == {"id", "calendar_id", "timestamp", "created"}
+    assert data["id"] is not None
+    assert data["calendar_id"] == calendar.id
     assert data["timestamp"] == "2020-12-22T09:25:00"
+    assert data["created"] is not None

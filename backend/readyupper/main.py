@@ -50,6 +50,15 @@ def delete_participant(participant_id: int, db: Session = Depends(get_db)):
     operations.delete_participant(db, participant)
 
 
+@app.patch("/participants/{participant_id}/", response_model=schemas.Participant)
+def update_participant(participant_id: int, data: schemas.ParticipantUpdate,
+                       db: Session = Depends(get_db)):
+    participant = db.query(Participant) \
+        .filter(Participant.id == participant_id) \
+        .one()
+    return operations.update_participant(db, participant, name=data.name)
+
+
 @app.post("/entries/", response_model=schemas.Entry)
 def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
     return operations.create_entry(db, entry.calendar_id, entry.timestamp)

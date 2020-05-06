@@ -65,6 +65,13 @@ def test_delete_participant(db: Session, participant: Participant):
     assert db.query(Participant).count() == 0
 
 
+def test_update_participant(db: Session, participant: Participant):
+    operations.update_participant(db, participant, "John")
+
+    participant = db.query(Participant).one()
+    assert participant.name == "John"
+
+
 def test_create_entry(db: Session, calendar: Calendar):
     timestamp = datetime(2020, 5, 18, 10, 30, 0)
 
