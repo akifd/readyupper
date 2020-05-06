@@ -51,3 +51,9 @@ def create_entry(calendar_id: int, entry: schemas.EntryCreate,
                  db: Session = Depends(get_db)):
     calendar = db.query(models.Calendar).filter(models.Calendar.id == calendar_id).one()
     return operations.create_entry(db, calendar, entry.timestamp)
+
+
+@app.delete("/entries/{entry_id}/")
+def delete_entry(entry_id: int, db: Session = Depends(get_db)):
+    entry = db.query(models.Entry).one()
+    operations.delete_entry(db, entry)

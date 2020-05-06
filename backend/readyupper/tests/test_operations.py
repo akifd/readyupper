@@ -94,3 +94,9 @@ def test_create_entry(db, calendar):
     entry = db.query(Entry).one()
     assert entry.calendar_id == calendar.id
     assert entry.timestamp == timestamp
+
+
+def test_delete_entry(db, entry):
+    assert db.query(Entry).count() == 1
+    operations.delete_entry(db, entry)
+    assert db.query(Entry).count() == 0

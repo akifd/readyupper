@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -55,3 +57,11 @@ def calendar(db):
     db.add(calendar)
     db.flush()
     return calendar
+
+
+@pytest.fixture
+def entry(db, calendar):
+    entry = models.Entry(timestamp=datetime(2020, 10, 19, 14, 30, 0))
+    calendar.entries = [entry]
+    db.flush()
+    return entry

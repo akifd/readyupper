@@ -80,3 +80,12 @@ def test_view_create_entry(test_client, db, calendar):
     assert data["calendar_id"] == calendar.id
     assert data["timestamp"] == "2020-05-18T10:30:00"
     assert data["created"] is not None
+
+
+def test_view_delete_entry(test_client, db, entry):
+    assert db.query(models.Entry).count() == 1
+
+    response = test_client.delete(f"/entries/{entry.id}/")
+
+    assert response.status_code == 200
+    assert db.query(models.Entry).count() == 0

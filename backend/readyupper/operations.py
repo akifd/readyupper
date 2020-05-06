@@ -46,3 +46,8 @@ def create_entry(db: Session, calendar: models.Calendar, timestamp):
     db.flush()
 
     return entry
+
+
+def delete_entry(db: Session, entry: models.Entry):
+    db.delete(entry)
+    db.flush()
