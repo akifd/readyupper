@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -38,12 +36,10 @@ def create_calendar(calendar: schemas.CalendarCreate, db: Session = Depends(get_
     return operations.create_calendar(db, calendar.name)
 
 
-@app.post("/calendar/{calendar_id}/participants/",
-          response_model=List[schemas.Participant])
-def set_participants(calendar_id: int, participants: List[str],
-                     db: Session = Depends(get_db)):
-    calendar = db.query(models.Calendar).filter(models.Calendar.id == calendar_id).one()
-    return operations.set_participants(db, calendar, participants)
+@app.post("/participants/", response_model=schemas.Participant)
+def create_participant(participant: schemas.ParticipantCreate,
+                       db: Session = Depends(get_db)):
+    return operations.create_participant(db, participant.calendar_id, participant.name)
 
 
 @app.post("/entries/", response_model=schemas.Entry)

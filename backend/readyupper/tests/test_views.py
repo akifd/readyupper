@@ -4,10 +4,11 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from readyupper import schemas, models
+from readyupper import schemas
+from readyupper.models import Calendar, Entry, Participant
 
 
-def test_view_read_calendar(test_client: TestClient, calendar: models.Calendar):
+def test_view_read_calendar(test_client: TestClient, calendar: Calendar):
     response = test_client.get(f"/calendar/{calendar.url_hash}/")
 
     assert response.status_code == 200
@@ -17,7 +18,7 @@ def test_view_read_calendar(test_client: TestClient, calendar: models.Calendar):
 
 
 def test_view_create_calendar(db: Session, test_client: TestClient):
-    assert db.query(models.Calendar).count() == 0
+    assert db.query(Calendar).count() == 0
 
     response = test_client.post("/calendar/", json={"name": "New calendar"})
 
@@ -27,8 +28,8 @@ def test_view_create_calendar(db: Session, test_client: TestClient):
     assert data.keys() == {"id", "name", "url_hash", "created"}
     assert data == json.loads(schemas.Calendar(**data).json())
 
-    assert db.query(models.Calendar).count() == 1
-    calendar = db.query(models.Calendar).one()
+    assert db.query(Calendar).count() == 1
+    calendar = db.query(Calendar).one()
     assert calendar.name == "New calendar"
     assert calendar.url_hash
     assert calendar.created
@@ -46,33 +47,41 @@ def test_view_create_calendar_with_short_name(db: Session, test_client: TestClie
     }
 
 
-def test_view_set_participants(db: Session, test_client: TestClient,
-                               calendar: models.Calendar):
-    assert db.query(models.Participant).count() == 0
-
-    response = test_client.post(f"/calendar/{calendar.id}/participants/",
-                                json=["Jack", "John"])
+def test_view_create_participant(db: Session, test_client: TestClient,
+                                 calendar: Calendar):
+    response = test_client.post("/participants/",
+                                json={"calendar_id": calendar.id, "name": "Jack"})
 
     assert response.status_code == 200
 
     data = response.json()
+    assert data.keys() == {"id", "calendar_id", "name", "created"}
+    assert data == json.loads(schemas.Participant(**data).json())
 
-    assert data[0].keys() == {"id", "calendar_id", "name", "created"}
-    assert data[0]["id"] is not None
-    assert data[0]["calendar_id"] == calendar.id
-    assert data[0]["name"] == "Jack"
-    assert data[0]["created"] is not None
+    assert db.query(Participant).count() == 1
+    participant = db.query(Participant).one()
+    assert participant.calendar_id == calendar.id
+    assert participant.name == "Jack"
+    assert participant.created
 
-    assert data[1].keys() == {"id", "calendar_id", "name", "created"}
-    assert data[1]["id"] is not None
-    assert data[1]["calendar_id"] == calendar.id
-    assert data[1]["name"] == "John"
-    assert data[1]["created"] is not None
+
+def test_view_create_participant_with_short_name(db: Session, test_client: TestClient,
+                                                 calendar: Calendar):
+    response = test_client.post("/participants/",
+                                json={"calendar_id": calendar.id, "name": ""})
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [{
+            "loc": ["body", "participant", "name"],
+            "msg": "Name must be at least 3 characters long.",
+            "type": "value_error",
+        }]
+    }
 
 
 def test_view_create_entry(db: Session, test_client: TestClient,
-                           calendar: models.Calendar):
-    assert db.query(models.Entry).count() == 0
+                           calendar: Calendar):
+    assert db.query(Entry).count() == 0
 
     response = test_client.post("/entries/", json={"calendar_id": calendar.id,
                                                    "timestamp": "2020-05-18 10:30:00"})
@@ -88,22 +97,22 @@ def test_view_create_entry(db: Session, test_client: TestClient,
     assert data["created"] is not None
 
 
-def test_view_delete_entry(db: Session, test_client: TestClient, entry: models.Entry):
-    assert db.query(models.Entry).count() == 1
+def test_view_delete_entry(db: Session, test_client: TestClient, entry: Entry):
+    assert db.query(Entry).count() == 1
 
     response = test_client.delete(f"/entries/{entry.id}/")
 
     assert response.status_code == 200
-    assert db.query(models.Entry).count() == 0
+    assert db.query(Entry).count() == 0
 
 
-def test_view_update_entry(db: Session, test_client: TestClient, entry: models.Entry):
+def test_view_update_entry(db: Session, test_client: TestClient, entry: Entry):
     response = test_client.patch(f"/entries/{entry.id}/",
                                  json={"timestamp": "2020-12-22 09:25:00"})
 
     assert response.status_code == 200
 
-    entry = db.query(models.Entry).one()
+    entry = db.query(Entry).one()
     assert entry.timestamp == datetime(2020, 12, 22, 9, 25, 0)
 
     data = response.json()

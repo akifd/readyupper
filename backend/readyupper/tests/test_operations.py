@@ -49,42 +49,14 @@ def test_create_calendar_without_name(db: Session):
         operations.create_calendar(db, name="")
 
 
-def test_set_participants(db: Session, calendar: Calendar):
+def test_create_participant(db: Session, calendar: Calendar):
     assert db.query(Participant).count() == 0
-    operations.set_participants(db, calendar, ["Jack", "John"])
-    assert db.query(Participant).count() == 2
+    operations.create_participant(db, calendar.id, "Jack")
+    assert db.query(Participant).count() == 1
 
-    participants = db.query(Participant).order_by(Participant.id).all()
-    assert participants[0].calendar_id == calendar.id
-    assert participants[0].name == "Jack"
-    assert participants[1].calendar_id == calendar.id
-    assert participants[1].name == "John"
-
-
-def test_set_participants_with_existing_rows(db: Session, calendar: Calendar):
-    calendar.participants = [Participant(calendar=calendar, name="Jack"),
-                             Participant(calendar=calendar, name="John")]
-    db.flush()
-
-    assert db.query(Participant).count() == 2
-    operations.set_participants(db, calendar, ["Jack", "Mat"])
-    assert db.query(Participant).count() == 2
-
-    participants = db.query(Participant).order_by(Participant.id).all()
-    assert participants[0].calendar_id == calendar.id
-    assert participants[0].name == "Jack"
-    assert participants[1].calendar_id == calendar.id
-    assert participants[1].name == "Mat"
-
-
-def test_set_participants_to_empty(db: Session, calendar: Calendar):
-    calendar.participants = [Participant(calendar=calendar, name="Jack"),
-                             Participant(calendar=calendar, name="John")]
-    db.flush()
-
-    assert db.query(Participant).count() == 2
-    operations.set_participants(db, calendar, [])
-    assert db.query(Participant).count() == 0
+    participant = db.query(Participant).one()
+    assert participant.calendar_id == calendar.id
+    assert participant.name == "Jack"
 
 
 def test_create_entry(db: Session, calendar: Calendar):
