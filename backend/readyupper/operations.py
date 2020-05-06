@@ -37,3 +37,12 @@ def set_participants(db: Session, calendar: models.Calendar, participants: List[
     db.flush()
 
     return participants
+
+
+def create_entry(db: Session, calendar: models.Calendar, timestamp):
+    entry = models.Entry(calendar_id=calendar.id, timestamp=timestamp)
+
+    db.add(entry)
+    db.flush()
+
+    return entry

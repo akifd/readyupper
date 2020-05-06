@@ -54,10 +54,29 @@ def test_view_set_participants(test_client, db, calendar):
 
     assert data[0].keys() == {"id", "calendar_id", "name", "created"}
     assert data[0]["id"] is not None
+    assert data[0]["calendar_id"] == calendar.id
     assert data[0]["name"] == "Jack"
     assert data[0]["created"] is not None
 
     assert data[1].keys() == {"id", "calendar_id", "name", "created"}
     assert data[1]["id"] is not None
+    assert data[1]["calendar_id"] == calendar.id
     assert data[1]["name"] == "John"
     assert data[1]["created"] is not None
+
+
+def test_view_create_entry(test_client, db, calendar):
+    assert db.query(models.Entry).count() == 0
+
+    response = test_client.post(f"/calendar/{calendar.id}/entries/",
+                                json={"timestamp": "2020-05-18 10:30:00"})
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data.keys() == {"id", "calendar_id", "timestamp", "created"}
+    assert data["id"] is not None
+    assert data["calendar_id"] == calendar.id
+    assert data["timestamp"] == "2020-05-18T10:30:00"
+    assert data["created"] is not None

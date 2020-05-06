@@ -1,8 +1,10 @@
+from datetime import datetime
+
 import pytest
 from sqlalchemy.orm.exc import NoResultFound
 
 from readyupper import operations
-from readyupper.models import Calendar, Participant
+from readyupper.models import Calendar, Participant, Entry
 
 
 def test_get_calendar(db, calendar):
@@ -82,3 +84,13 @@ def test_set_participants_to_empty(db, calendar):
     assert db.query(Participant).count() == 2
     operations.set_participants(db, calendar, [])
     assert db.query(Participant).count() == 0
+
+
+def test_create_entry(db, calendar):
+    timestamp = datetime(2020, 5, 18, 10, 30, 0)
+
+    operations.create_entry(db, calendar, timestamp)
+
+    entry = db.query(Entry).one()
+    assert entry.calendar_id == calendar.id
+    assert entry.timestamp == timestamp

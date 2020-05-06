@@ -34,3 +34,20 @@ class Participant(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Entry(BaseModel):
+    id: int
+    calendar_id: int
+    timestamp: datetime
+    created: datetime = datetime.now
+
+    class Config:
+        orm_mode = True
+
+
+class EntryCreate(BaseModel):
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True

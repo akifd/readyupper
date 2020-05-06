@@ -16,6 +16,20 @@ class Calendar(Base):
     participants = relationship("Participant", order_by=lambda: Participant.id,
                                 back_populates="calendar",
                                 cascade="all, delete, delete-orphan")
+    entries = relationship("Entry", order_by=lambda: Entry.id,
+                           back_populates="calendar",
+                           cascade="all, delete, delete-orphan")
+
+
+class Entry(Base):
+    __tablename__ = "entries"
+
+    id = Column(Integer, primary_key=True)
+    calendar_id = Column(Integer, ForeignKey("calendars.id"), nullable=False)
+    timestamp = Column(DateTime, nullable=False)
+    created = Column(DateTime, nullable=False, server_default=func.now())
+
+    calendar = relationship("Calendar", back_populates="entries")
 
 
 class Participant(Base):
