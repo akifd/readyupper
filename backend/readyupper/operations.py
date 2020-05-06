@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from . import models
 
 
-def get_calendar(db: Session, calendar_id: int):
+def get_calendar(db: Session, calendar_id: int) -> models.Calendar:
     return db.query(models.Calendar).filter(models.Calendar.id == calendar_id).one()
 
 
@@ -14,7 +14,7 @@ def get_calendar_by_hash(db: Session, url_hash: str):
     return db.query(models.Calendar).filter(models.Calendar.url_hash == url_hash).one()
 
 
-def create_calendar(db: Session, name: str):
+def create_calendar(db: Session, name: str) -> models.Calendar:
     if len(name) < 3:
         raise ValueError("Calendar name must be at least 3 characters long.")
 
@@ -25,7 +25,8 @@ def create_calendar(db: Session, name: str):
     return db_calendar
 
 
-def set_participants(db: Session, calendar: models.Calendar, participants: List[str]):
+def set_participants(db: Session, calendar: models.Calendar, participants: List[str]) \
+        -> List[models.Participant]:
     db.query(models.Participant) \
         .filter(models.Participant.calendar_id == calendar.id) \
         .delete()
@@ -39,7 +40,7 @@ def set_participants(db: Session, calendar: models.Calendar, participants: List[
     return participants
 
 
-def create_entry(db: Session, calendar: models.Calendar, timestamp):
+def create_entry(db: Session, calendar: models.Calendar, timestamp) -> models.Entry:
     entry = models.Entry(calendar_id=calendar.id, timestamp=timestamp)
 
     db.add(entry)
@@ -48,6 +49,6 @@ def create_entry(db: Session, calendar: models.Calendar, timestamp):
     return entry
 
 
-def delete_entry(db: Session, entry: models.Entry):
+def delete_entry(db: Session, entry: models.Entry) -> None:
     db.delete(entry)
     db.flush()
