@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
@@ -18,8 +17,7 @@ def create_calendar(db: Session, name: str) -> Calendar:
     if len(name) < 3:
         raise ValueError("Calendar name must be at least 3 characters long.")
 
-    # TODO: Hash collision protection.
-    db_calendar = Calendar(name=name, url_hash=uuid4().hex)
+    db_calendar = Calendar(name=name)
     db.add(db_calendar)
     db.flush()
     return db_calendar

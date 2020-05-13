@@ -53,7 +53,7 @@ def test_client(db, mocker):
 
 @pytest.fixture
 def calendar(db):
-    calendar = models.Calendar(name="Test calendar", url_hash="abcdefg")
+    calendar = models.Calendar(name="Test calendar")
     db.add(calendar)
     db.flush()
     return calendar

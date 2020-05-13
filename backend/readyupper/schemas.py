@@ -1,11 +1,11 @@
 from datetime import datetime
 from pydantic import BaseModel, validator
+from uuid import UUID
 
 
 class Calendar(BaseModel):
-    id: int
+    id: UUID
     name: str
-    url_hash: str
     created: datetime = datetime.now
 
     class Config:
@@ -27,8 +27,8 @@ class CalendarCreate(BaseModel):
 
 
 class Participant(BaseModel):
-    id: int
-    calendar_id: int
+    id: UUID
+    calendar_id: UUID
     name: str
     created: datetime = datetime.now
 
@@ -37,7 +37,7 @@ class Participant(BaseModel):
 
 
 class ParticipantCreate(BaseModel):
-    calendar_id: int
+    calendar_id: UUID
     name: str
 
     @validator("name")
@@ -66,8 +66,8 @@ class ParticipantUpdate(BaseModel):
 
 
 class Entry(BaseModel):
-    id: int
-    calendar_id: int
+    id: UUID
+    calendar_id: UUID
     timestamp: datetime
     created: datetime = datetime.now
 
@@ -76,7 +76,7 @@ class Entry(BaseModel):
 
 
 class EntryCreate(BaseModel):
-    calendar_id: int
+    calendar_id: UUID
     timestamp: datetime
 
     class Config:

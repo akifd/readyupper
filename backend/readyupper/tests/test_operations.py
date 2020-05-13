@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 import pytest
@@ -17,19 +18,7 @@ def test_get_calendar(db: Session, calendar: Calendar):
 
 def test_get_non_existant_calendar(db: Session, calendar: Calendar):
     with pytest.raises(NoResultFound):
-        operations.get_calendar(db, calendar_id=-1)
-
-
-def test_get_calendar_by_hash(db: Session, calendar: Calendar):
-    found = operations.get_calendar_by_hash(db, url_hash=calendar.url_hash)
-
-    assert isinstance(calendar, Calendar)
-    assert found.id == calendar.id
-
-
-def test_get_calendar_by_invalid_hash(db: Session, calendar: Calendar):
-    with pytest.raises(NoResultFound):
-        operations.get_calendar_by_hash(db, url_hash=calendar.url_hash + "zxc")
+        operations.get_calendar(db, calendar_id=uuid.uuid4())
 
 
 def test_create_calendar(db: Session):
@@ -40,7 +29,6 @@ def test_create_calendar(db: Session):
     assert db.query(Calendar).count() == 1
     assert calendar.id
     assert calendar.name == "New calendar"
-    assert calendar.url_hash
     assert calendar.created
 
 

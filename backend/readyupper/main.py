@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -26,9 +28,9 @@ def get_db():
         db.close()
 
 
-@app.get("/calendar/{url_hash}/", response_model=schemas.Calendar)
-def read_calendar(url_hash: str, db: Session = Depends(get_db)):
-    return operations.get_calendar_by_hash(db, url_hash)
+@app.get("/calendar/{calendar_id}/", response_model=schemas.Calendar)
+def read_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
+    return operations.get_calendar(db, calendar_id)
 
 
 @app.post("/calendar/", response_model=schemas.Calendar)
@@ -43,7 +45,7 @@ def create_participant(participant: schemas.ParticipantCreate,
 
 
 @app.delete("/participants/{participant_id}/")
-def delete_participant(participant_id: int, db: Session = Depends(get_db)):
+def delete_participant(participant_id: UUID, db: Session = Depends(get_db)):
     participant = db.query(Participant) \
         .filter(Participant.id == participant_id) \
         .one()
@@ -51,7 +53,7 @@ def delete_participant(participant_id: int, db: Session = Depends(get_db)):
 
 
 @app.patch("/participants/{participant_id}/", response_model=schemas.Participant)
-def update_participant(participant_id: int, data: schemas.ParticipantUpdate,
+def update_participant(participant_id: UUID, data: schemas.ParticipantUpdate,
                        db: Session = Depends(get_db)):
     participant = db.query(Participant) \
         .filter(Participant.id == participant_id) \
@@ -65,12 +67,13 @@ def create_entry(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
 
 
 @app.delete("/entries/{entry_id}/")
-def delete_entry(entry_id: int, db: Session = Depends(get_db)):
+def delete_entry(entry_id: UUID, db: Session = Depends(get_db)):
     entry = db.query(Entry).filter(Entry.id == entry_id).one()
     operations.delete_entry(db, entry)
 
 
 @app.patch("/entries/{entry_id}/", response_model=schemas.Entry)
-def update_entry(entry_id: int, data: schemas.EntryUpdate, db: Session = Depends(get_db)):
+def update_entry(entry_id: UUID, data: schemas.EntryUpdate,
+                 db: Session = Depends(get_db)):
     entry = db.query(Entry).filter(Entry.id == entry_id).one()
     return operations.update_entry(db, entry, data.timestamp)

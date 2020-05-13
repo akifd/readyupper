@@ -9,11 +9,13 @@ from readyupper.models import Calendar, Entry, Participant
 
 
 def test_view_read_calendar(test_client: TestClient, calendar: Calendar):
-    response = test_client.get(f"/calendar/{calendar.url_hash}/")
+    response = test_client.get(f"/calendar/{calendar.id}/")
 
+    from pprint import pprint
+    pprint(response.json())
     assert response.status_code == 200
     data = response.json()
-    assert data.keys() == {"id", "name", "url_hash", "created"}
+    assert data.keys() == {"id", "name", "created"}
     assert data == json.loads(schemas.Calendar(**data).json())
 
 
@@ -25,13 +27,12 @@ def test_view_create_calendar(db: Session, test_client: TestClient):
     assert response.status_code == 200
 
     data = response.json()
-    assert data.keys() == {"id", "name", "url_hash", "created"}
+    assert data.keys() == {"id", "name", "created"}
     assert data == json.loads(schemas.Calendar(**data).json())
 
     assert db.query(Calendar).count() == 1
     calendar = db.query(Calendar).one()
     assert calendar.name == "New calendar"
-    assert calendar.url_hash
     assert calendar.created
 
 
@@ -50,7 +51,7 @@ def test_view_create_calendar_with_short_name(db: Session, test_client: TestClie
 def test_view_create_participant(db: Session, test_client: TestClient,
                                  calendar: Calendar):
     response = test_client.post("/participants/",
-                                json={"calendar_id": calendar.id, "name": "Jack"})
+                                json={"calendar_id": str(calendar.id), "name": "Jack"})
 
     assert response.status_code == 200
 
@@ -68,7 +69,7 @@ def test_view_create_participant(db: Session, test_client: TestClient,
 def test_view_create_participant_with_short_name(db: Session, test_client: TestClient,
                                                  calendar: Calendar):
     response = test_client.post("/participants/",
-                                json={"calendar_id": calendar.id, "name": ""})
+                                json={"calendar_id": str(calendar.id), "name": ""})
     assert response.status_code == 422
     assert response.json() == {
         "detail": [{
@@ -102,7 +103,7 @@ def test_view_update_participant(db: Session, test_client: TestClient,
     data = response.json()
     assert data.keys() == {"id", "calendar_id", "name", "created"}
     assert data["id"] is not None
-    assert data["calendar_id"] == calendar.id
+    assert data["calendar_id"] == str(calendar.id)
     assert data["name"] == "John"
     assert data["created"] is not None
 
@@ -111,7 +112,7 @@ def test_view_create_entry(db: Session, test_client: TestClient,
                            calendar: Calendar):
     assert db.query(Entry).count() == 0
 
-    response = test_client.post("/entries/", json={"calendar_id": calendar.id,
+    response = test_client.post("/entries/", json={"calendar_id": str(calendar.id),
                                                    "timestamp": "2020-05-18 10:30:00"})
 
     assert response.status_code == 200
@@ -120,7 +121,7 @@ def test_view_create_entry(db: Session, test_client: TestClient,
 
     assert data.keys() == {"id", "calendar_id", "timestamp", "created"}
     assert data["id"] is not None
-    assert data["calendar_id"] == calendar.id
+    assert data["calendar_id"] == str(calendar.id)
     assert data["timestamp"] == "2020-05-18T10:30:00"
     assert data["created"] is not None
 
@@ -147,6 +148,6 @@ def test_view_update_entry(db: Session, test_client: TestClient, calendar: Calen
     data = response.json()
     assert data.keys() == {"id", "calendar_id", "timestamp", "created"}
     assert data["id"] is not None
-    assert data["calendar_id"] == calendar.id
+    assert data["calendar_id"] == str(calendar.id)
     assert data["timestamp"] == "2020-12-22T09:25:00"
     assert data["created"] is not None
