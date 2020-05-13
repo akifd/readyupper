@@ -58,7 +58,8 @@ function Frontpage() {
             <ul>
               <li>Free and fast to use</li>
               <li>No registration</li>
-              <li>Anyone with link can edit the calendar</li>
+              <li>No login</li>
+              <li>No bloat</li>
             </ul>
             <Typography component="p" gutterBottom>
               Calendars are automatically deleted after 3 months.
