@@ -1,6 +1,5 @@
 export interface Calendar {
-  id: number,
+  id: string,
   name: string,
-  url_hash: string,
   created: string,
 }
