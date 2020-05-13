@@ -48,15 +48,23 @@ function CalendarDetail() {
         <Typography component="p" align="center">
           { error }
         </Typography>
+        <Typography component="p" gutterBottom align="center">
+          Back to <Link to="/">frontpage</Link>.
+        </Typography>
       </div>
     )
   }
 
   if (!calendar) {
     return (
-      <Typography variant="h2" component="h2" gutterBottom align="center">
-        { "Loading..." }
-      </Typography>
+      <div>
+        <Typography variant="h2" component="h2" gutterBottom align="center">
+          { "Loading..." }
+        </Typography>
+        <Typography component="p" gutterBottom align="center">
+          Back to <Link to="/">frontpage</Link>.
+        </Typography>
+      </div>
     )
   }
 
