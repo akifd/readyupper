@@ -7,7 +7,9 @@ import Typography from '@material-ui/core/Typography'
 
 import './App.css'
 import Frontpage from './components/Frontpage'
+import CalendarView from './components/CalendarView'
 import CalendarDetail from './components/CalendarDetail'
+import CalendarEdit from './components/CalendarEdit'
 
 
 function App() {
@@ -20,8 +22,11 @@ function App() {
           </Typography>
 
           <Switch>
+            <Route path="/:calendarId/edit/">
+              <CalendarView Child={CalendarEdit} />
+            </Route>
             <Route path="/:calendarId">
-              <CalendarDetail />
+              <CalendarView Child={CalendarDetail} />
             </Route>
             <Route path="/">
               <Frontpage />

@@ -5,18 +5,18 @@ import { Link } from 'react-router-dom'
 import { Calendar } from '../interfaces'
 
 
-function CalendarDetail(props: { calendar: Calendar }) {
+function CalendarEdit(props: { calendar: Calendar }) {
   return (
     <div>
       <Typography component="p" gutterBottom align="center">
-        Copy the link to this page and share it to the participants.
+        Here you can edit the calendar.
       </Typography>
 
       <Typography component="p" align="center">
-        Edit <Link to={`/${props.calendar.id}/edit/`}>calendar</Link>
+        Back to <Link to={`/${props.calendar.id}/`}>calendar</Link>
       </Typography>
     </div>
   )
 }
 
-export default CalendarDetail
+export default CalendarEdit
