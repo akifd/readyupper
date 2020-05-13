@@ -20,7 +20,7 @@ function App() {
           </Typography>
 
           <Switch>
-            <Route path="/:urlHash">
+            <Route path="/:calendarId">
               <CalendarDetail />
             </Route>
             <Route path="/">

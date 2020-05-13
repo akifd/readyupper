@@ -16,10 +16,10 @@ function setTitle(calendar: Calendar): () => void {
 }
 
 
-function fetchCalendar(urlHash: string, setCalendar: Function, setError: Function) {
+function fetchCalendar(calendarId: string, setCalendar: Function, setError: Function) {
   setCalendar(null)
 
-  let promise = axios.get("http://localhost:8000/calendar/" + urlHash + "/")
+  let promise = axios.get("http://localhost:8000/calendar/" + calendarId + "/")
 
   promise.then((response: AxiosResponse) => {
     setCalendar(response.data)
@@ -32,11 +32,11 @@ function fetchCalendar(urlHash: string, setCalendar: Function, setError: Functio
 
 
 function CalendarDetail() {
-  let { urlHash } = useParams()
+  let { calendarId } = useParams()
   let [calendar, setCalendar] = useState()
   let [error, setError] = useState()
 
-  useEffect(() => fetchCalendar(urlHash, setCalendar, setError), [urlHash])
+  useEffect(() => fetchCalendar(calendarId, setCalendar, setError), [calendarId])
   useEffect(() => setTitle(calendar), [calendar])
 
   if (error) {
@@ -72,9 +72,6 @@ function CalendarDetail() {
     <div>
       <Typography variant="h2" component="h2" gutterBottom align="center">
         { calendar.name }
-      </Typography>
-      <Typography component="p" gutterBottom align="center">
-        { urlHash }
       </Typography>
       <Typography component="p" gutterBottom align="center">
         Copy the link to this page and share it to the participants.
