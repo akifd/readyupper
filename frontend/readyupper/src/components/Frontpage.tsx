@@ -51,9 +51,8 @@ function Frontpage() {
               About
             </Typography>
             <Typography component="p" gutterBottom>
-              With Readyupper you can quickly schedule events/meetings by creating a calendar
-              and adding datetimes and participants. Share the link and everyone can choose the
-              datetimes that are available for them.
+              Quickly schedule events/meetings by creating a calendar and adding dates and
+              participants. Share the link and everyone can choose the dates that suits them.
             </Typography>
             <ul>
               <li>Free and fast to use</li>
