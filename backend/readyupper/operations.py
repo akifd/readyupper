@@ -9,10 +9,6 @@ def get_calendar(db: Session, calendar_id: int) -> Calendar:
     return db.query(Calendar).filter(Calendar.id == calendar_id).one()
 
 
-def get_calendar_by_hash(db: Session, url_hash: str):
-    return db.query(Calendar).filter(Calendar.url_hash == url_hash).one()
-
-
 def create_calendar(db: Session, name: str) -> Calendar:
     if len(name) < 3:
         raise ValueError("Calendar name must be at least 3 characters long.")
