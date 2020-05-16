@@ -37,6 +37,12 @@ def test_create_calendar_without_name(db: Session):
         operations.create_calendar(db, name="")
 
 
+def test_delete_calendar(db: Session, calendar: Calendar):
+    assert db.query(Calendar).count() == 1
+    operations.delete_calendar(db, calendar)
+    assert db.query(Calendar).count() == 0
+
+
 def test_create_participant(db: Session, calendar: Calendar):
     assert db.query(Participant).count() == 0
     operations.create_participant(db, calendar.id, "Jack")

@@ -11,8 +11,6 @@ from readyupper.models import Calendar, Entry, Participant, Participation
 def test_view_read_calendar(test_client: TestClient, calendar: Calendar):
     response = test_client.get(f"/calendar/{calendar.id}/")
 
-    from pprint import pprint
-    pprint(response.json())
     assert response.status_code == 200
     data = response.json()
     assert data.keys() == {"id", "name", "created"}
@@ -46,6 +44,12 @@ def test_view_create_calendar_with_short_name(db: Session, test_client: TestClie
             "type": "value_error",
         }]
     }
+
+
+def test_delete_calendar(db: Session, test_client: TestClient, calendar: Calendar):
+    response = test_client.delete(f"/calendars/{calendar.id}/")
+    assert response.status_code == 200
+    assert db.query(Calendar).count() == 0
 
 
 def test_view_create_participant(db: Session, test_client: TestClient,

@@ -20,6 +20,11 @@ def create_calendar(db: Session, name: str) -> Calendar:
     return db_calendar
 
 
+def delete_calendar(db: Session, calendar: Calendar) -> None:
+    db.delete(calendar)
+    db.flush()
+
+
 def create_participant(db: Session, calendar_id: UUID, name: str) -> Participant:
     participant = Participant(calendar_id=calendar_id, name=name)
 
