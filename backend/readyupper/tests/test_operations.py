@@ -43,6 +43,13 @@ def test_delete_calendar(db: Session, calendar: Calendar):
     assert db.query(Calendar).count() == 0
 
 
+def test_get_participant(db: Session, participant: Participant):
+    found = operations.get_participant(db, participant_id=participant.id)
+
+    assert isinstance(found, Participant)
+    assert found.id == participant.id
+
+
 def test_create_participant(db: Session, calendar: Calendar):
     assert db.query(Participant).count() == 0
     operations.create_participant(db, calendar.id, "Jack")

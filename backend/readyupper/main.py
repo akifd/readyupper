@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from . import schemas, operations
-from .models import Entry, Participant, Participation
+from .models import Entry, Participation
 from .database import Session as SessionLocal
 
 
@@ -52,18 +52,14 @@ def create_participant(participant: schemas.ParticipantCreate,
 
 @app.delete("/participants/{participant_id}/")
 def delete_participant(participant_id: UUID, db: Session = Depends(get_db)):
-    participant = db.query(Participant) \
-        .filter(Participant.id == participant_id) \
-        .one()
+    participant = operations.get_participant(db, participant_id)
     operations.delete_participant(db, participant)
 
 
 @app.patch("/participants/{participant_id}/", response_model=schemas.Participant)
 def update_participant(participant_id: UUID, data: schemas.ParticipantUpdate,
                        db: Session = Depends(get_db)):
-    participant = db.query(Participant) \
-        .filter(Participant.id == participant_id) \
-        .one()
+    participant = operations.get_participant(db, participant_id)
     return operations.update_participant(db, participant, name=data.name)
 
 

@@ -25,6 +25,12 @@ def delete_calendar(db: Session, calendar: Calendar) -> None:
     db.flush()
 
 
+def get_participant(db: Session, participant_id: UUID) -> Participant:
+    return db.query(Participant) \
+        .filter(Participant.id == participant_id) \
+        .one()
+
+
 def create_participant(db: Session, calendar_id: UUID, name: str) -> Participant:
     participant = Participant(calendar_id=calendar_id, name=name)
 
