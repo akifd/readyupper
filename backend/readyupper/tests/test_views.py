@@ -170,3 +170,13 @@ def test_create_participation(db: Session, test_client: TestClient, calendar: Ca
     assert participation.entry_id == entry.id
     assert participation.participant_id == participant.id
     assert participation.created is not None
+
+
+def test_view_delete_participation(db: Session, test_client: TestClient,
+                                   participation: Participation):
+    assert db.query(Participation).count() == 1
+
+    response = test_client.delete(f"/participations/{participation.id}/")
+
+    assert response.status_code == 200
+    assert db.query(Participation).count() == 0

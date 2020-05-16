@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from . import schemas, operations
-from .models import Entry, Participant
+from .models import Entry, Participant, Participation
 from .database import Session as SessionLocal
 
 
@@ -85,3 +85,11 @@ def create_participation(data: schemas.ParticipationCreate,
     operations.create_participation(db, data.calendar_id, data.entry_id,
                                     data.participant_id)
     return {}
+
+
+@app.delete("/participations/{participation_id}/")
+def delete_participation(participation_id: UUID, db: Session = Depends(get_db)):
+    participation = db.query(Participation) \
+        .filter(Participation.id == participation_id) \
+        .one()
+    operations.delete_entry(db, participation)

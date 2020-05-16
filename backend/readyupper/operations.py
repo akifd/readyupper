@@ -69,3 +69,8 @@ def create_participation(db: Session, calendar_id: UUID, entry_id: UUID,
     db.flush()
 
     return participation
+
+
+def delete_participation(db: Session, participation: Participation) -> None:
+    db.delete(participation)
+    db.flush()

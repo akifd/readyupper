@@ -93,3 +93,9 @@ def test_create_participation(db: Session, calendar: Calendar, entry: Entry,
     assert participation.calendar_id == calendar.id
     assert participation.entry_id == entry.id
     assert participation.participant_id == participant.id
+
+
+def test_delete_participation(db: Session, participation: Participation):
+    assert db.query(Participation).count() == 1
+    operations.delete_participation(db, participation)
+    assert db.query(Participation).count() == 0
