@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from . import models
-from .database import DATABASE_SETTINGS, database_url, Base
+from .database import DATABASE_SETTINGS, Base, database_url
 from .main import app, get_db
 
 

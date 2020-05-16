@@ -1,12 +1,12 @@
 from uuid import UUID
 
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import schemas, operations
-from .models import Entry, Participation
+from . import operations, schemas
 from .database import Session as SessionLocal
+from .models import Entry, Participation
 
 
 app = FastAPI()

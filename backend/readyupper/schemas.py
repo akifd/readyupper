@@ -1,6 +1,7 @@
 from datetime import datetime
-from pydantic import BaseModel, validator
 from uuid import UUID
+
+from pydantic import BaseModel, validator
 
 
 class Calendar(BaseModel):

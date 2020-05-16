@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
 from readyupper import operations
-from readyupper.models import Calendar, Participant, Entry, Participation
+from readyupper.models import Calendar, Entry, Participant, Participation
 
 
 def test_get_calendar(db: Session, calendar: Calendar):
