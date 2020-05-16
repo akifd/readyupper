@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
 from readyupper import operations
-from readyupper.models import Calendar, Participant, Entry
+from readyupper.models import Calendar, Participant, Entry, Participation
 
 
 def test_get_calendar(db: Session, calendar: Calendar):
@@ -83,3 +83,13 @@ def test_update_entry(db: Session, entry: Entry):
 
     entry = db.query(Entry).one()
     assert entry.timestamp == datetime(2020, 5, 10, 18, 45, 0)
+
+
+def test_create_participation(db: Session, calendar: Calendar, entry: Entry,
+                              participant: Participant):
+    operations.create_participation(db, calendar.id, entry.id, participant.id)
+
+    participation = db.query(Participation).one()
+    assert participation.calendar_id == calendar.id
+    assert participation.entry_id == entry.id
+    assert participation.participant_id == participant.id

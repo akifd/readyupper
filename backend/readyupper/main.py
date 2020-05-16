@@ -77,3 +77,11 @@ def update_entry(entry_id: UUID, data: schemas.EntryUpdate,
                  db: Session = Depends(get_db)):
     entry = db.query(Entry).filter(Entry.id == entry_id).one()
     return operations.update_entry(db, entry, data.timestamp)
+
+
+@app.post("/participations/")
+def create_participation(data: schemas.ParticipationCreate,
+                         db: Session = Depends(get_db)):
+    operations.create_participation(db, data.calendar_id, data.entry_id,
+                                    data.participant_id)
+    return {}

@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from readyupper import schemas
-from readyupper.models import Calendar, Entry, Participant
+from readyupper.models import Calendar, Entry, Participant, Participation
 
 
 def test_view_read_calendar(test_client: TestClient, calendar: Calendar):
@@ -151,3 +151,22 @@ def test_view_update_entry(db: Session, test_client: TestClient, calendar: Calen
     assert data["calendar_id"] == str(calendar.id)
     assert data["timestamp"] == "2020-12-22T09:25:00"
     assert data["created"] is not None
+
+
+def test_create_participation(db: Session, test_client: TestClient, calendar: Calendar,
+                              entry: Entry, participant: Participant):
+    response = test_client.post(
+        "/participations/",
+        json={"calendar_id": str(calendar.id),
+              "entry_id": str(entry.id),
+              "participant_id": str(participant.id)}
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {}
+
+    participation = db.query(Participation).one()
+    assert participation.calendar_id == calendar.id
+    assert participation.entry_id == entry.id
+    assert participation.participant_id == participant.id
+    assert participation.created is not None

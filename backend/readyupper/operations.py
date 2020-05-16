@@ -1,11 +1,12 @@
 from datetime import datetime
+from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from .models import Calendar, Entry, Participant
+from .models import Calendar, Entry, Participant, Participation
 
 
-def get_calendar(db: Session, calendar_id: int) -> Calendar:
+def get_calendar(db: Session, calendar_id: UUID) -> Calendar:
     return db.query(Calendar).filter(Calendar.id == calendar_id).one()
 
 
@@ -19,7 +20,7 @@ def create_calendar(db: Session, name: str) -> Calendar:
     return db_calendar
 
 
-def create_participant(db: Session, calendar_id: int, name: str) -> Participant:
+def create_participant(db: Session, calendar_id: UUID, name: str) -> Participant:
     participant = Participant(calendar_id=calendar_id, name=name)
 
     db.add(participant)
@@ -39,7 +40,7 @@ def update_participant(db: Session, participant: Participant, name: str) -> Part
     return participant
 
 
-def create_entry(db: Session, calendar_id: int, timestamp) -> Entry:
+def create_entry(db: Session, calendar_id: UUID, timestamp) -> Entry:
     entry = Entry(calendar_id=calendar_id, timestamp=timestamp)
 
     db.add(entry)
@@ -57,3 +58,14 @@ def update_entry(db: Session, entry: Entry, timestamp: datetime) -> Entry:
     entry.timestamp = timestamp
     db.flush()
     return entry
+
+
+def create_participation(db: Session, calendar_id: UUID, entry_id: UUID,
+                         participant_id: UUID) -> Participation:
+    participation = Participation(calendar_id=calendar_id, entry_id=entry_id,
+                                  participant_id=participant_id)
+
+    db.add(participation)
+    db.flush()
+
+    return participation

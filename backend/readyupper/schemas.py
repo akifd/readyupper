@@ -88,3 +88,12 @@ class EntryUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ParticipationCreate(BaseModel):
+    calendar_id: UUID
+    entry_id: UUID
+    participant_id: UUID
+
+    class Config:
+        orm_mode = True
