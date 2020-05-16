@@ -29,7 +29,7 @@ def get_db():
 
 
 @app.get("/calendar/{calendar_id}/", response_model=schemas.Calendar)
-def read_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
+def get_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
     return operations.get_calendar(db, calendar_id)
 
 
