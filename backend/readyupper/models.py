@@ -16,12 +16,15 @@ class Calendar(Base):
     name = Column(String(255), nullable=False)
     created = Column(DateTime, nullable=False, server_default=func.now())
 
-    participants = relationship("Participant", order_by=lambda: Participant.id,
-                                back_populates="calendar",
-                                cascade="all, delete, delete-orphan")
     entries = relationship("Entry", order_by=lambda: Entry.id,
                            back_populates="calendar",
                            cascade="all, delete, delete-orphan")
+    participants = relationship("Participant", order_by=lambda: Participant.id,
+                                back_populates="calendar",
+                                cascade="all, delete, delete-orphan")
+    participations = relationship("Participation", order_by=lambda: Participation.id,
+                                  back_populates="calendar",
+                                  cascade="all, delete, delete-orphan")
 
 
 class Entry(Base):
@@ -34,6 +37,8 @@ class Entry(Base):
     created = Column(DateTime, nullable=False, server_default=func.now())
 
     calendar = relationship("Calendar", back_populates="entries")
+    participations = relationship("Participation", back_populates="entry",
+                                  cascade="all, delete, delete-orphan")
 
 
 class Participant(Base):
@@ -46,3 +51,22 @@ class Participant(Base):
     created = Column(DateTime, nullable=False, server_default=func.now())
 
     calendar = relationship("Calendar", back_populates="participants")
+    participations = relationship("Participation", order_by=lambda: Participation.id,
+                                  back_populates="participant",
+                                  cascade="all, delete, delete-orphan")
+
+
+class Participation(Base):
+    __tablename__ = "participation"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,
+                nullable=False)
+    calendar_id = Column(UUID(as_uuid=True), ForeignKey("calendars.id"), nullable=False)
+    entry_id = Column(UUID(as_uuid=True), ForeignKey("entries.id"), nullable=False)
+    participant_id = Column(UUID(as_uuid=True), ForeignKey("participants.id"),
+                            nullable=False)
+    created = Column(DateTime, nullable=False, server_default=func.now())
+
+    calendar = relationship("Calendar", back_populates="participations")
+    entry = relationship("Entry", back_populates="participations")
+    participant = relationship("Participant", back_populates="participations")
