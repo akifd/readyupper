@@ -1,4 +1,5 @@
 import json
+import uuid
 from datetime import datetime
 
 from fastapi.testclient import TestClient
@@ -8,13 +9,20 @@ from readyupper import schemas
 from readyupper.models import Calendar, Entry, Participant, Participation
 
 
-def test_view_read_calendar(test_client: TestClient, calendar: Calendar):
+def test_view_get_calendar(test_client: TestClient, calendar: Calendar):
     response = test_client.get(f"/calendar/{calendar.id}/")
 
     assert response.status_code == 200
     data = response.json()
     assert data.keys() == {"id", "name", "created"}
     assert data == json.loads(schemas.Calendar(**data).json())
+
+
+def test_view_get_inexistant_calendar(test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.get(f"/calendar/{random_uuid}/")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Calendar not found."}
 
 
 def test_view_create_calendar(db: Session, test_client: TestClient):
@@ -50,6 +58,13 @@ def test_delete_calendar(db: Session, test_client: TestClient, calendar: Calenda
     response = test_client.delete(f"/calendars/{calendar.id}/")
     assert response.status_code == 200
     assert db.query(Calendar).count() == 0
+
+
+def test_delete_inexistant_calendar(db: Session, test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.delete(f"/calendars/{random_uuid}/")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Calendar not found."}
 
 
 def test_view_create_participant(db: Session, test_client: TestClient,
@@ -94,6 +109,13 @@ def test_view_delete_participant(db: Session, test_client: TestClient,
     assert db.query(Participant).count() == 0
 
 
+def test_view_delete_inexistant_participant(test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.delete(f"/participants/{random_uuid}/")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Participant not found."}
+
+
 def test_view_update_participant(db: Session, test_client: TestClient,
                                  calendar: Calendar, participant: Participant):
     response = test_client.patch(f"/participants/{participant.id}/",
@@ -110,6 +132,14 @@ def test_view_update_participant(db: Session, test_client: TestClient,
     assert data["calendar_id"] == str(calendar.id)
     assert data["name"] == "John"
     assert data["created"] is not None
+
+
+def test_view_update_inexistant_participant(test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.patch(f"/participants/{random_uuid}/",
+                                 json={"name": "John"})
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Participant not found."}
 
 
 def test_view_create_entry(db: Session, test_client: TestClient,
@@ -139,6 +169,13 @@ def test_view_delete_entry(db: Session, test_client: TestClient, entry: Entry):
     assert db.query(Entry).count() == 0
 
 
+def test_view_delete_inexistant_entry(test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.delete(f"/entries/{random_uuid}/")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Entry not found."}
+
+
 def test_view_update_entry(db: Session, test_client: TestClient, calendar: Calendar,
                            entry: Entry):
     response = test_client.patch(f"/entries/{entry.id}/",
@@ -155,6 +192,14 @@ def test_view_update_entry(db: Session, test_client: TestClient, calendar: Calen
     assert data["calendar_id"] == str(calendar.id)
     assert data["timestamp"] == "2020-12-22T09:25:00"
     assert data["created"] is not None
+
+
+def test_view_update_inexistant_entry(test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.patch(f"/entries/{random_uuid}/",
+                                 json={"timestamp": "2020-12-22 09:25:00"})
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Entry not found."}
 
 
 def test_create_participation(db: Session, test_client: TestClient, calendar: Calendar,
@@ -184,3 +229,10 @@ def test_view_delete_participation(db: Session, test_client: TestClient,
 
     assert response.status_code == 200
     assert db.query(Participation).count() == 0
+
+
+def test_view_delete_inexistant_participation(test_client: TestClient):
+    random_uuid = uuid.uuid4()
+    response = test_client.delete(f"/participations/{random_uuid}/")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Participation not found."}
