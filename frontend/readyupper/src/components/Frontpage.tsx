@@ -12,6 +12,8 @@ import { Redirect } from 'react-router-dom'
 
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
+import { backendUrl } from '../utils'
+
 
 function Frontpage() {
   const [calendarName, setCalendarName] = useState("")
@@ -28,7 +30,7 @@ function Frontpage() {
       return
 
     // TODO: DRY the url to the backend.
-    let promise = axios.post("http://localhost:8000/calendars/", {name: calendarName})
+    let promise = axios.post(backendUrl("/calendars/"), {name: calendarName})
 
     promise.then((response: AxiosResponse) => {
       setCreatedCalendar(response.data)

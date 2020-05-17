@@ -6,6 +6,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios'
 import { Redirect } from 'react-router-dom'
 
 import { Calendar } from '../interfaces'
+import { backendUrl } from '../utils'
 
 
 function CalendarEdit(props: { calendar: Calendar }) {
@@ -15,7 +16,7 @@ function CalendarEdit(props: { calendar: Calendar }) {
     return <Redirect to="/" />
 
   function deleteCalendar() {
-    let promise = axios.delete("http://localhost:8000/calendars/" + props.calendar.id + "/")
+    let promise = axios.delete(backendUrl("/calendars/" + props.calendar.id + "/"))
 
     promise.then((response: AxiosResponse) => {
       setDeleted(true)

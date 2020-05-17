@@ -1,7 +1,12 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
+import config from './config'
 import { Calendar } from './interfaces'
 
+
+export function backendUrl(path: string) {
+    return config.BACKEND_URL + path
+}
 
 export function setTitle(calendar: Calendar): () => void {
   if (calendar)
@@ -16,7 +21,7 @@ export function setTitle(calendar: Calendar): () => void {
 export function fetchCalendar(calendarId: string, setCalendar: Function, setError: Function) {
   setCalendar(null)
 
-  let promise = axios.get("http://localhost:8000/calendars/" + calendarId + "/")
+  let promise = axios.get(backendUrl("/calendars/" + calendarId + "/"))
 
   promise.then((response: AxiosResponse) => {
     setCalendar(response.data)
