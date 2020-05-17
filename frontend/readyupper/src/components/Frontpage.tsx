@@ -56,8 +56,7 @@ function Frontpage() {
             </Typography>
             <ul>
               <li>Free and fast to use</li>
-              <li>No registration</li>
-              <li>No login</li>
+              <li>No registration/login</li>
               <li>No bloat</li>
             </ul>
             <Typography component="p" gutterBottom>
