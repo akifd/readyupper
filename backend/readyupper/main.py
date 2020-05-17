@@ -30,7 +30,7 @@ def get_db():
 
 
 # TODO: Change to /calendars/{calendar_id}/.
-@app.get("/calendar/{calendar_id}/", response_model=schemas.Calendar)
+@app.get("/calendars/{calendar_id}/", response_model=schemas.Calendar)
 def get_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
     try:
         return operations.get_calendar(db, calendar_id)
@@ -39,7 +39,7 @@ def get_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
 
 
 # TODO: Change to /calendars/.
-@app.post("/calendar/", response_model=schemas.Calendar)
+@app.post("/calendars/", response_model=schemas.Calendar)
 def create_calendar(calendar: schemas.CalendarCreate, db: Session = Depends(get_db)):
     return operations.create_calendar(db, calendar.name)
 

@@ -10,7 +10,7 @@ from readyupper.models import Calendar, Entry, Participant, Participation
 
 
 def test_get_calendar(test_client: TestClient, calendar: Calendar):
-    response = test_client.get(f"/calendar/{calendar.id}/")
+    response = test_client.get(f"/calendars/{calendar.id}/")
 
     assert response.status_code == 200
     data = response.json()
@@ -20,7 +20,7 @@ def test_get_calendar(test_client: TestClient, calendar: Calendar):
 
 def test_get_inexistant_calendar(test_client: TestClient):
     random_uuid = uuid.uuid4()
-    response = test_client.get(f"/calendar/{random_uuid}/")
+    response = test_client.get(f"/calendars/{random_uuid}/")
     assert response.status_code == 404
     assert response.json() == {"detail": "Calendar not found."}
 
@@ -28,7 +28,7 @@ def test_get_inexistant_calendar(test_client: TestClient):
 def test_create_calendar(db: Session, test_client: TestClient):
     assert db.query(Calendar).count() == 0
 
-    response = test_client.post("/calendar/", json={"name": "New calendar"})
+    response = test_client.post("/calendars/", json={"name": "New calendar"})
 
     assert response.status_code == 200
 
@@ -43,7 +43,7 @@ def test_create_calendar(db: Session, test_client: TestClient):
 
 
 def test_create_calendar_with_short_name(db: Session, test_client: TestClient):
-    response = test_client.post("/calendar/", json={"name": "AB"})
+    response = test_client.post("/calendars/", json={"name": "AB"})
     assert response.status_code == 422
     assert response.json() == {
         "detail": [{

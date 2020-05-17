@@ -28,7 +28,7 @@ function Frontpage() {
       return
 
     // TODO: DRY the url to the backend.
-    let promise = axios.post("http://localhost:8000/calendar/", {name: calendarName})
+    let promise = axios.post("http://localhost:8000/calendars/", {name: calendarName})
 
     promise.then((response: AxiosResponse) => {
       setCreatedCalendar(response.data)

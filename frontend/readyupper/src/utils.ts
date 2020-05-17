@@ -16,7 +16,7 @@ export function setTitle(calendar: Calendar): () => void {
 export function fetchCalendar(calendarId: string, setCalendar: Function, setError: Function) {
   setCalendar(null)
 
-  let promise = axios.get("http://localhost:8000/calendar/" + calendarId + "/")
+  let promise = axios.get("http://localhost:8000/calendars/" + calendarId + "/")
 
   promise.then((response: AxiosResponse) => {
     setCalendar(response.data)
