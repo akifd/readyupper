@@ -50,15 +50,19 @@ function Frontpage() {
             <Typography component="h2" variant="h4" gutterBottom>
               About
             </Typography>
+
             <Typography component="p" gutterBottom>
-              Quickly schedule events/meetings by creating a calendar and adding dates and
-              participants. Share the link and everyone can choose the dates that suits them.
+              Quickly schedule events by creating a calendar and adding dates and
+              participants. Share the link and participants choose the dates that suit
+              them.
             </Typography>
+
             <ul>
               <li>Free and fast to use</li>
               <li>No registration/login</li>
               <li>No bloat</li>
             </ul>
+
             <Typography component="p" gutterBottom>
               Calendars are automatically deleted after 3 months.
             </Typography>
