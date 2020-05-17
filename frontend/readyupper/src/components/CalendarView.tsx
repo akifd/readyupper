@@ -29,7 +29,7 @@ function CalendarView(props: { Child: Function }) {
 
       <props.Child calendar={calendar} />
 
-      <Typography component="p" gutterBottom align="center">
+      <Typography component="p" gutterBottom>
         Back to <Link to="/">frontpage</Link>.
       </Typography>
     </div>

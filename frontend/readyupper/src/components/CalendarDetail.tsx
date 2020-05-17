@@ -8,11 +8,11 @@ import { Calendar } from '../interfaces'
 function CalendarDetail(props: { calendar: Calendar }) {
   return (
     <div>
-      <Typography component="p" gutterBottom align="center">
+      <Typography component="p" gutterBottom>
         Copy the link to this page and share it to the participants.
       </Typography>
 
-      <Typography component="p" align="center">
+      <Typography component="p">
         Edit <Link to={`/${props.calendar.id}/edit/`}>calendar</Link>
       </Typography>
     </div>
