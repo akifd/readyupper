@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+
+import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 
 import { fetchCalendar, setTitle } from '../utils'
@@ -22,17 +24,23 @@ function CalendarView(props: { Child: Function }) {
     return <Loading />
 
   return (
-    <div>
-      <Typography variant="h2" component="h2" gutterBottom align="center">
-        { calendar.name }
-      </Typography>
+    <Grid container spacing={4}>
+      <Grid item xs={12}>
+        <Typography variant="h2" component="h2" align="center">
+          { calendar.name }
+        </Typography>
+      </Grid>
 
-      <props.Child calendar={calendar} />
+      <Grid item xs={12}>
+        <props.Child calendar={calendar} />
+      </Grid>
 
-      <Typography component="p" gutterBottom>
-        Back to <Link to="/">frontpage</Link>
-      </Typography>
-    </div>
+      <Grid item xs={12}>
+        <Typography component="p" gutterBottom>
+          Back to <Link to="/">frontpage</Link>
+        </Typography>
+      </Grid>
+    </Grid>
   )
 }
 
