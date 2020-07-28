@@ -34,12 +34,13 @@ function CalendarEdit(props: { calendar: Calendar }) {
   if (deleted)
     return <Redirect to="/" />
 
-  function createParticipant(event: React.FormEvent<HTMLFormElement>) {
+  function onCreateParticipant(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     let input = (document.getElementById('participant-input') as HTMLInputElement)
-    setParticipants([...participants, input.value])
+    let name: string = input.value
     input.value = ''
+    setParticipants([...participants, name])
   }
 
   function onCreateEntry(event: React.FormEvent<HTMLFormElement>) {
@@ -64,16 +65,25 @@ function CalendarEdit(props: { calendar: Calendar }) {
      // TODO
   }
 
-  console.log("Rendering!")
-  console.log(entries)
-
   return (
     <Grid container spacing={6}>
-
       <Grid item xs={12} md={6}>
-        <form method="post" onSubmit={createParticipant}>
+        <form method="post" onSubmit={onCreateParticipant}>
           <TextField id="participant-input" label="Participant name" helperText="Press enter to add." fullWidth />
         </form>
+
+        <List>
+          {participants.map((value, index) =>
+            <ListItem key={index}>
+              <ListItemText primary={value} />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          )}
+        </List>
       </Grid>
 
       <Grid item xs={12} md={6}>
@@ -83,7 +93,7 @@ function CalendarEdit(props: { calendar: Calendar }) {
 
         <List>
           {entries.map((value, index) =>
-            <ListItem>
+            <ListItem key={index}>
               <ListItemText primary={value.timestamp} />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete">
