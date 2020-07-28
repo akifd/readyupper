@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
@@ -10,7 +9,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
-
 import { Link } from 'react-router-dom'
 import { AxiosResponse, AxiosError } from 'axios'
 import { Redirect } from 'react-router-dom'
@@ -94,7 +92,7 @@ function CalendarEdit(props: {calendar: Calendar}) {
     createEntry(props.calendar.id, timestamp).then(success).catch(failure)
   }
 
-  function saveCalendar() {
+  function onSaveCalendar() {
      // TODO
   }
 
@@ -153,7 +151,7 @@ function CalendarEdit(props: {calendar: Calendar}) {
       <Grid container item justify="space-between" xs={12}>
         <Grid item>
           <ButtonGroup>
-            <Button variant="contained" color="primary" onClick={saveCalendar}>
+            <Button variant="contained" color="primary" onClick={onSaveCalendar}>
               Save Calendar
             </Button>
             <Button variant="contained" component={Link} to={`/${props.calendar.id}/`}>
