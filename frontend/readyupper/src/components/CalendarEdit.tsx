@@ -10,7 +10,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import { Link } from 'react-router-dom'
-import { AxiosResponse, AxiosError } from 'axios'
 import { Redirect } from 'react-router-dom'
 
 import { Calendar } from '../interfaces'
@@ -26,28 +25,34 @@ function CalendarEdit(props: {calendar: Calendar}) {
 
   // Participant fetching.
   useEffect(() => {
-    function success(response: AxiosResponse) {
-      setParticipants(response.data)
-    }
+    async function fetchData() {
+      try {
+        let response = await fetchParticipants(props.calendar.id)
 
-    function failure(response: AxiosError) {
-      setError("Participant fetching failed.")
+        if (response.status === 200)
+          setParticipants(response.data)
+      }
+      catch (error) {
+        setError("Participant fetching failed.")
+      }
     }
-
-    fetchParticipants(props.calendar.id).then(success).catch(failure)
+    fetchData()
   }, [props.calendar.id])
 
   // Entry fetching.
   useEffect(() => {
-    function success(response: AxiosResponse) {
-      setEntries(response.data)
-    }
+    async function fetchData() {
+      try {
+        let response = await fetchEntries(props.calendar.id)
 
-    function failure(response: AxiosError) {
-      setError("Entry fetching failed.")
+        if (response.status === 200)
+          setEntries(response.data)
+      }
+      catch(error) {
+        setError("Entry fetching failed.")
+      }
     }
-
-    fetchEntries(props.calendar.id).then(success).catch(failure)
+    fetchData()
   }, [props.calendar.id])
 
   if (error)
@@ -56,56 +61,56 @@ function CalendarEdit(props: {calendar: Calendar}) {
   if (deleted)
     return <Redirect to="/" />
 
-  function onCreateParticipant(event: React.FormEvent<HTMLFormElement>) {
+  async function onCreateParticipant(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     let input = (document.getElementById('participant-input') as HTMLInputElement)
     let name: string = input.value
     input.value = ''
 
-    function success(response: AxiosResponse) {
-      setParticipants([...participants, response.data])
-    }
+    try {
+      let response = await createParticipant(props.calendar.id, name)
 
-    function failure(response: AxiosError) {
+      if (response.status === 200)
+        setParticipants([...participants, response.data])
+    }
+    catch (error) {
       setError("Participant creation failed.")
     }
-
-    createParticipant(props.calendar.id, name).then(success).catch(failure)
   }
 
-  function onCreateEntry(event: React.FormEvent<HTMLFormElement>) {
+  async function onCreateEntry(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     let input = (document.getElementById('entry-input') as HTMLInputElement)
     let timestamp: string = input.value
     input.value = ''
 
-    function success(response: AxiosResponse) {
-      setEntries([...entries, response.data])
-    }
+    try {
+      let response = await createEntry(props.calendar.id, timestamp)
 
-    function failure(response: AxiosError) {
+      if (response.status === 200)
+        setEntries([...entries, response.data])
+    }
+    catch (error) {
       setError("Entry creation failed.")
     }
-
-    createEntry(props.calendar.id, timestamp).then(success).catch(failure)
   }
 
   function onSaveCalendar() {
      // TODO
   }
 
-  function onDeleteCalendar() {
-    function success(response: AxiosResponse) {
-      setDeleted(true)
-    }
+  async function onDeleteCalendar() {
+    try {
+      let response = await deleteCalendar(props.calendar.id)
 
-    function failure(response: AxiosError) {
+      if (response.status === 200)
+        setDeleted(true)
+    }
+    catch (error) {
       setError("Calendar deletion failed.")
     }
-
-    deleteCalendar(props.calendar.id).then(success).catch(failure)
   }
 
   return (
