@@ -51,18 +51,8 @@ export function createEntry(calendarId: string, timestamp: string) {
 }
 
 
-export function fetchEntries(calendarId: string, setEntries: Function, setError: Function) {
-  setEntries([])
-
-  let promise = axios.get(backendUrl("/entries/?calendar_id=" + calendarId))
-
-  promise.then((response: AxiosResponse) => {
-    setEntries(response.data)
-  })
-
-  promise.catch((error: AxiosError) => {
-    setError("An error occurred. Try loading the page again soon.")
-  })
+export function fetchEntries(calendarId: string) {
+  return axios.get(backendUrl("/entries/?calendar_id=" + calendarId))
 }
 
 

@@ -26,6 +26,7 @@ function CalendarEdit(props: {calendar: Calendar}) {
   let [participants, setParticipants] = useState([])
   let [entries, setEntries] = useState([])
 
+  // Participant fetching.
   useEffect(() => {
     function success(response: AxiosResponse) {
       setParticipants(response.data)
@@ -38,8 +39,18 @@ function CalendarEdit(props: {calendar: Calendar}) {
     fetchParticipants(props.calendar.id).then(success).catch(failure)
   }, [props.calendar.id])
 
-  // TODO: Change like fetchParticipants.
-  useEffect(() => fetchEntries(props.calendar.id, setEntries, setError), [props.calendar.id])
+  // Entry fetching.
+  useEffect(() => {
+    function success(response: AxiosResponse) {
+      setEntries(response.data)
+    }
+
+    function failure(response: AxiosError) {
+      setError("Entry fetching failed.")
+    }
+
+    fetchEntries(props.calendar.id).then(success).catch(failure)
+  }, [props.calendar.id])
 
   if (error)
     return <ErrorMessage message={error} />
