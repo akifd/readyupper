@@ -51,6 +51,20 @@ def test_get_participant(db: Session, participant: Participant):
     assert found.id == participant.id
 
 
+def test_get_participants(db: Session, calendar: Calendar,
+                          participants: List[Participant]):
+    results = operations.get_participants(db, calendar.id)
+
+    assert results[0].id == participants[0].id
+    assert results[0].calendar_id == participants[0].calendar_id
+    assert results[0].name == participants[0].name
+    assert results[0].created == participants[0].created
+    assert results[1].id == participants[1].id
+    assert results[1].calendar_id == participants[1].calendar_id
+    assert results[1].name == participants[1].name
+    assert results[1].created == participants[1].created
+
+
 def test_create_participant(db: Session, calendar: Calendar):
     assert db.query(Participant).count() == 0
     operations.create_participant(db, calendar.id, "Jack")

@@ -64,3 +64,13 @@ export function fetchEntries(calendarId: string, setEntries: Function, setError:
     setError("An error occurred. Try loading the page again soon.")
   })
 }
+
+
+export function createParticipant(calendarId: string, name: string) {
+  return axios.post(backendUrl('/participants/'), {'calendar_id': calendarId, 'name': name})
+}
+
+
+export function fetchParticipants(calendarId: string) {
+  return axios.get(backendUrl("/participants/?calendar_id=" + calendarId))
+}

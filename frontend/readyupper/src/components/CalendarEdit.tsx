@@ -16,16 +16,29 @@ import { AxiosResponse, AxiosError } from 'axios'
 import { Redirect } from 'react-router-dom'
 
 import { Calendar } from '../interfaces'
-import { deleteCalendar, createEntry, fetchEntries } from '../utils'
+import { deleteCalendar, createEntry, fetchEntries, createParticipant, fetchParticipants } from '../utils'
 import ErrorMessage from './ErrorMessage'
 
 
-function CalendarEdit(props: { calendar: Calendar }) {
+function CalendarEdit(props: {calendar: Calendar}) {
   let [deleted, setDeleted] = useState(false)
+  let [error, setError] = useState("")
   let [participants, setParticipants] = useState([])
   let [entries, setEntries] = useState([])
-  let [error, setError] = useState("")
 
+  useEffect(() => {
+    function success(response: AxiosResponse) {
+      setParticipants(response.data)
+    }
+
+    function failure(response: AxiosError) {
+      setError("Participant fetching failed.")
+    }
+
+    fetchParticipants(props.calendar.id).then(success).catch(failure)
+  }, [props.calendar.id])
+
+  // TODO: Change like fetchParticipants.
   useEffect(() => fetchEntries(props.calendar.id, setEntries, setError), [props.calendar.id])
 
   if (error)
@@ -40,7 +53,16 @@ function CalendarEdit(props: { calendar: Calendar }) {
     let input = (document.getElementById('participant-input') as HTMLInputElement)
     let name: string = input.value
     input.value = ''
-    setParticipants([...participants, name])
+
+    function success(response: AxiosResponse) {
+      setParticipants([...participants, response.data])
+    }
+
+    function failure(response: AxiosError) {
+      setError("Participant creation failed.")
+    }
+
+    createParticipant(props.calendar.id, name).then(success).catch(failure)
   }
 
   function onCreateEntry(event: React.FormEvent<HTMLFormElement>) {
@@ -55,7 +77,7 @@ function CalendarEdit(props: { calendar: Calendar }) {
     }
 
     function failure(response: AxiosError) {
-      // TODO
+      setError("Entry creation failed.")
     }
 
     createEntry(props.calendar.id, timestamp).then(success).catch(failure)
@@ -73,9 +95,9 @@ function CalendarEdit(props: { calendar: Calendar }) {
         </form>
 
         <List>
-          {participants.map((value, index) =>
+          {participants.map((participant, index) =>
             <ListItem key={index}>
-              <ListItemText primary={value} />
+              <ListItemText primary={participant.name} />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete">
                   <DeleteIcon />
@@ -92,9 +114,9 @@ function CalendarEdit(props: { calendar: Calendar }) {
         </form>
 
         <List>
-          {entries.map((value, index) =>
+          {entries.map((entry, index) =>
             <ListItem key={index}>
-              <ListItemText primary={value.timestamp} />
+              <ListItemText primary={entry.timestamp} />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete">
                   <DeleteIcon />

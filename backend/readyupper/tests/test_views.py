@@ -68,6 +68,27 @@ def test_delete_inexistant_calendar(db: Session, test_client: TestClient):
     assert response.json() == {"detail": "Calendar not found."}
 
 
+def test_get_participants(db: Session, test_client: TestClient, calendar: Calendar,
+                          participants: List[Participant]):
+    response = test_client.get("/participants/", params={"calendar_id": calendar.id})
+    assert response.status_code == 200
+
+    data = response.json()
+    assert len(data) == 2
+
+    assert data[0].keys() == {"id", "calendar_id", "name", "created"}
+    assert data[0]["id"] == str(participants[0].id)
+    assert data[0]["calendar_id"] == str(participants[0].calendar_id)
+    assert data[0]["name"] == participants[0].name
+    assert data[0]["created"] == participants[0].created.isoformat()
+
+    assert data[1].keys() == {"id", "calendar_id", "name", "created"}
+    assert data[1]["id"] == str(participants[1].id)
+    assert data[1]["calendar_id"] == str(participants[1].calendar_id)
+    assert data[1]["name"] == participants[1].name
+    assert data[1]["created"] == participants[1].created.isoformat()
+
+
 def test_create_participant(db: Session, test_client: TestClient, calendar: Calendar):
     response = test_client.post("/participants/",
                                 json={"calendar_id": str(calendar.id), "name": "Jack"})

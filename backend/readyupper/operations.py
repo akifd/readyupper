@@ -32,6 +32,13 @@ def get_participant(db: Session, participant_id: UUID) -> Participant:
         .one()
 
 
+def get_participants(db: Session, calendar_id: UUID) -> List[Participant]:
+    return db.query(Participant) \
+        .filter(Participant.calendar_id == calendar_id) \
+        .order_by(Participant.created) \
+        .all()
+
+
 def create_participant(db: Session, calendar_id: UUID, name: str) -> Participant:
     participant = Participant(calendar_id=calendar_id, name=name)
 

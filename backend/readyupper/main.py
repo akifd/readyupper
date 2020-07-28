@@ -53,6 +53,11 @@ def delete_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
     operations.delete_calendar(db, calendar)
 
 
+@app.get("/participants/", response_model=List[schemas.Participant])
+def get_participants(calendar_id: UUID, db: Session = Depends(get_db)):
+    return operations.get_participants(db, calendar_id)
+
+
 @app.post("/participants/", response_model=schemas.Participant)
 def create_participant(participant: schemas.ParticipantCreate,
                        db: Session = Depends(get_db)):
