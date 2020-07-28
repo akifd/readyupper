@@ -33,16 +33,8 @@ export function fetchCalendar(calendarId: string, setCalendar: Function, setErro
 }
 
 
-export function deleteCalendar(calendarId: string, setDeleted: Function) {
-  var promise = axios.delete(backendUrl("/calendars/" + calendarId + "/"))
-
-  promise.then((response: AxiosResponse) => {
-    setDeleted(true)
-  })
-
-  promise.catch((error: AxiosError) => {
-    // TODO
-  })
+export function deleteCalendar(calendarId: string) {
+  return axios.delete(backendUrl("/calendars/" + calendarId + "/"))
 }
 
 

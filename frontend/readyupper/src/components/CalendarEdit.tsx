@@ -98,6 +98,18 @@ function CalendarEdit(props: {calendar: Calendar}) {
      // TODO
   }
 
+  function onDeleteCalendar() {
+    function success(response: AxiosResponse) {
+      setDeleted(true)
+    }
+
+    function failure(response: AxiosError) {
+      setError("Calendar deletion failed.")
+    }
+
+    deleteCalendar(props.calendar.id).then(success).catch(failure)
+  }
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12} md={6}>
@@ -150,7 +162,7 @@ function CalendarEdit(props: {calendar: Calendar}) {
           </ButtonGroup>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="secondary" onClick={() => deleteCalendar(props.calendar.id, setDeleted)}>
+          <Button variant="contained" color="secondary" onClick={onDeleteCalendar}>
             Delete Calendar
           </Button>
         </Grid>
