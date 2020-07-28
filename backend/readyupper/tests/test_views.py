@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import datetime
+from typing import List
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -139,6 +140,27 @@ def test_update_inexistant_participant(test_client: TestClient):
                                  json={"name": "John"})
     assert response.status_code == 404
     assert response.json() == {"detail": "Participant not found."}
+
+
+def test_get_entries(db: Session, test_client: TestClient, calendar: Calendar,
+                     entries: List[Entry]):
+    response = test_client.get("/entries/", params={"calendar_id": calendar.id})
+    assert response.status_code == 200
+
+    data = response.json()
+    assert len(data) == 2
+
+    assert data[0].keys() == {"id", "calendar_id", "timestamp", "created"}
+    assert data[0]["id"] == str(entries[0].id)
+    assert data[0]["calendar_id"] == str(entries[0].calendar_id)
+    assert data[0]["timestamp"] == entries[0].timestamp.isoformat()
+    assert data[0]["created"] == entries[0].created.isoformat()
+
+    assert data[1].keys() == {"id", "calendar_id", "timestamp", "created"}
+    assert data[1]["id"] == str(entries[1].id)
+    assert data[1]["calendar_id"] == str(entries[1].calendar_id)
+    assert data[1]["timestamp"] == entries[1].timestamp.isoformat()
+    assert data[1]["created"] == entries[1].created.isoformat()
 
 
 def test_create_entry(db: Session, test_client: TestClient, calendar: Calendar):

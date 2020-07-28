@@ -31,3 +31,36 @@ export function fetchCalendar(calendarId: string, setCalendar: Function, setErro
     setError("An error occurred. Try loading the page again soon.")
   })
 }
+
+
+export function deleteCalendar(calendarId: string, setDeleted: Function) {
+  var promise = axios.delete(backendUrl("/calendars/" + calendarId + "/"))
+
+  promise.then((response: AxiosResponse) => {
+    setDeleted(true)
+  })
+
+  promise.catch((error: AxiosError) => {
+    // TODO
+  })
+}
+
+
+export function createEntry(calendarId: string, timestamp: string) {
+  return axios.post(backendUrl('/entries/'), {'calendar_id': calendarId, 'timestamp': timestamp})
+}
+
+
+export function fetchEntries(calendarId: string, setEntries: Function, setError: Function) {
+  setEntries([])
+
+  let promise = axios.get(backendUrl("/entries/?calendar_id=" + calendarId))
+
+  promise.then((response: AxiosResponse) => {
+    setEntries(response.data)
+  })
+
+  promise.catch((error: AxiosError) => {
+    setError("An error occurred. Try loading the page again soon.")
+  })
+}

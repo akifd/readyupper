@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import List
 
 import pytest
 from sqlalchemy.orm import Session
@@ -71,6 +72,19 @@ def test_update_participant(db: Session, participant: Participant):
 
     participant = db.query(Participant).one()
     assert participant.name == "John"
+
+
+def test_get_entries(db: Session, calendar: Calendar, entries: List[Entry]):
+    results = operations.get_entries(db, calendar.id)
+
+    assert results[0].id == entries[0].id
+    assert results[0].calendar_id == entries[0].calendar_id
+    assert results[0].timestamp == entries[0].timestamp
+    assert results[0].created == entries[0].created
+    assert results[1].id == entries[1].id
+    assert results[1].calendar_id == entries[1].calendar_id
+    assert results[1].timestamp == entries[1].timestamp
+    assert results[1].created == entries[1].created
 
 
 def test_create_entry(db: Session, calendar: Calendar):

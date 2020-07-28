@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -49,6 +50,13 @@ def update_participant(db: Session, participant: Participant, name: str) -> Part
     participant.name = name
     db.flush()
     return participant
+
+
+def get_entries(db: Session, calendar_id: UUID) -> List[Entry]:
+    return db.query(Entry) \
+        .filter(Entry.calendar_id == calendar_id) \
+        .order_by(Entry.created) \
+        .all()
 
 
 def create_entry(db: Session, calendar_id: UUID, timestamp) -> Entry:

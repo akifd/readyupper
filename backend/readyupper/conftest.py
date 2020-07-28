@@ -29,16 +29,21 @@ def engine():
 
 
 @pytest.fixture(scope="session")
-def TestSession(engine):
+def session_maker(engine):
     return sessionmaker(bind=engine)
 
 
+@pytest.fixture(scope="session")
+def session(session_maker):
+    session = session_maker()
+    yield session
+    session.close()
+
+
 @pytest.fixture
-def db(TestSession):
-    session = TestSession()
+def db(session):
     yield session
     session.rollback()
-    session.close()
 
 
 @pytest.fixture
@@ -65,6 +70,19 @@ def entry(db, calendar):
     calendar.entries = [entry]
     db.flush()
     return entry
+
+
+@pytest.fixture
+def entries(db, calendar):
+    entries = [
+        models.Entry(calendar_id=calendar.id,
+                     timestamp=datetime(2020, 10, 19, 14, 30, 0)),
+        models.Entry(calendar_id=calendar.id,
+                     timestamp=datetime(2020, 10, 20, 12, 15, 0)),
+    ]
+    db.add_all(entries)
+    db.flush()
+    return entries
 
 
 @pytest.fixture

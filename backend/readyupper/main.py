@@ -1,3 +1,4 @@
+from typing import List
 from uuid import UUID
 
 from fastapi import Depends, FastAPI, HTTPException
@@ -29,7 +30,6 @@ def get_db():
         db.close()
 
 
-# TODO: Change to /calendars/{calendar_id}/.
 @app.get("/calendars/{calendar_id}/", response_model=schemas.Calendar)
 def get_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
     try:
@@ -38,7 +38,6 @@ def get_calendar(calendar_id: UUID, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Calendar not found.")
 
 
-# TODO: Change to /calendars/.
 @app.post("/calendars/", response_model=schemas.Calendar)
 def create_calendar(calendar: schemas.CalendarCreate, db: Session = Depends(get_db)):
     return operations.create_calendar(db, calendar.name)
@@ -79,6 +78,11 @@ def update_participant(participant_id: UUID, data: schemas.ParticipantUpdate,
         raise HTTPException(status_code=404, detail="Participant not found.")
 
     return operations.update_participant(db, participant, name=data.name)
+
+
+@app.get("/entries/", response_model=List[schemas.Entry])
+def get_entries(calendar_id: UUID, db: Session = Depends(get_db)):
+    return operations.get_entries(db, calendar_id)
 
 
 @app.post("/entries/", response_model=schemas.Entry)
