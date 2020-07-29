@@ -42,8 +42,13 @@ function CalendarDetail(props: { calendar: Calendar }) {
       try {
         let response = await fetchEntries(props.calendar.id)
 
-        if (response.status === 200)
-          setEntries(response.data)
+        if (response.status === 200) {
+          let entries = response.data.map((entry: Entry) => {
+            entry.timestamp = new Date(entry.timestamp)
+            return entry
+          })
+          setEntries(entries)
+        }
       }
       catch(error) {
         setError("Entry fetching failed.")
@@ -61,10 +66,11 @@ function CalendarDetail(props: { calendar: Calendar }) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Participant</TableCell>
+              <TableCell></TableCell>
               {entries.map((entry: Entry) => (
                 <TableCell align="center" key={entry.id}>
-                  {entry.timestamp}
+                  {entry.timestamp.toLocaleDateString()}<br/>
+                  {entry.timestamp.toLocaleTimeString()}
                 </TableCell>
               ))}
             </TableRow>
