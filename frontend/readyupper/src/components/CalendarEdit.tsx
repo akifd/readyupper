@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
 
 import { Calendar } from '../interfaces'
-import { deleteCalendar, createEntry, fetchEntries, createParticipant, fetchParticipants } from '../utils'
+import { deleteCalendar, createEntry, fetchEntries, createParticipant, fetchParticipants, convertEntry } from '../utils'
 import ErrorMessage from './ErrorMessage'
 
 
@@ -46,7 +46,7 @@ function CalendarEdit(props: {calendar: Calendar}) {
         let response = await fetchEntries(props.calendar.id)
 
         if (response.status === 200)
-          setEntries(response.data)
+          setEntries(response.data.map(convertEntry))
       }
       catch(error) {
         setError("Entry fetching failed.")
@@ -90,7 +90,7 @@ function CalendarEdit(props: {calendar: Calendar}) {
       let response = await createEntry(props.calendar.id, timestamp)
 
       if (response.status === 200)
-        setEntries([...entries, response.data])
+        setEntries([...entries, convertEntry(response.data)])
     }
     catch (error) {
       setError("Entry creation failed.")
@@ -140,9 +140,9 @@ function CalendarEdit(props: {calendar: Calendar}) {
         </form>
 
         <List>
-          {entries.map((entry, index) =>
-            <ListItem key={index}>
-              <ListItemText primary={entry.timestamp} />
+          {entries.map((entry) =>
+            <ListItem key={entry.id}>
+              <ListItemText primary={entry.timestamp.toLocaleString()} />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete">
                   <DeleteIcon />

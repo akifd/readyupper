@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
 import config from './config'
-import { Calendar } from './interfaces'
+import { Calendar, Entry } from './interfaces'
 
 
 export function backendUrl(path: string) {
@@ -55,4 +55,11 @@ export function createParticipant(calendarId: string, name: string) {
 
 export function fetchParticipants(calendarId: string) {
   return axios.get(backendUrl("/participants/?calendar_id=" + calendarId))
+}
+
+
+export function convertEntry(entry: any) {
+  entry.timestamp = new Date(entry.timestamp)
+  entry.created = new Date(entry.created)
+  return entry
 }
