@@ -116,6 +116,12 @@ def update_entry(entry_id: UUID, data: schemas.EntryUpdate,
     return operations.update_entry(db, entry, data.timestamp)
 
 
+@app.get("/participations/", response_model=List[schemas.Participation])
+def get_participations(calendar_id: UUID, entry_id: UUID = None,
+                       participant_id: UUID = None, db: Session = Depends(get_db)):
+    return operations.get_participations(db, calendar_id, entry_id, participant_id)
+
+
 @app.post("/participations/")
 def create_participation(data: schemas.ParticipationCreate,
                          db: Session = Depends(get_db)):

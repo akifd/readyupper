@@ -126,6 +126,20 @@ def test_update_entry(db: Session, entry: Entry):
     assert entry.timestamp == datetime(2020, 5, 10, 18, 45, 0)
 
 
+def test_get_participations_not_existing(db: Session, calendar: Calendar, entry: Entry,
+                                         participant: Participant):
+    participations = operations.get_participations(db, calendar.id, entry.id,
+                                                   participant.id)
+    assert participations == []
+
+
+def test_get_participations(db: Session, calendar: Calendar, entry: Entry,
+                            participant: Participant, participation: Participation):
+    participations = operations.get_participations(db, calendar.id, entry.id,
+                                                   participant.id)
+    assert participations == [participation]
+
+
 def test_create_participation(db: Session, calendar: Calendar, entry: Entry,
                               participant: Participant):
     operations.create_participation(db, calendar.id, entry.id, participant.id)

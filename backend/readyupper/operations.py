@@ -86,6 +86,19 @@ def update_entry(db: Session, entry: Entry, timestamp: datetime) -> Entry:
     return entry
 
 
+def get_participations(db: Session, calendar_id: UUID, entry_id: UUID = None,
+                       participant_id: UUID = None):
+    query = db.query(Participation).filter(Participation.calendar_id == calendar_id)
+
+    if entry_id:
+        query = query.filter(Participation.entry_id == entry_id)
+
+    if participant_id:
+        query = query.filter(Participation.participant_id == participant_id)
+
+    return query.all()
+
+
 def create_participation(db: Session, calendar_id: UUID, entry_id: UUID,
                          participant_id: UUID) -> Participation:
     participation = Participation(calendar_id=calendar_id, entry_id=entry_id,

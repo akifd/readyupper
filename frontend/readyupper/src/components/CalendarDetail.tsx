@@ -8,11 +8,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
 
 import { Calendar, Participant, Entry } from '../interfaces'
 import { fetchEntries, fetchParticipants } from '../utils'
 import ErrorMessage from './ErrorMessage'
+import ParticipationCheckbox from './ParticipationCheckbox.js'
 
 
 function CalendarDetail(props: { calendar: Calendar }) {
@@ -77,13 +77,13 @@ function CalendarDetail(props: { calendar: Calendar }) {
           </TableHead>
           <TableBody>
             {participants.map((participant: Participant) => (
-              <TableRow>
-                <TableCell component="th" scope="row" key={participant.id}>
+              <TableRow key={participant.id}>
+                <TableCell component="th" scope="row">
                   {participant.name}
                 </TableCell>
                 {entries.map((entry: Entry) => (
-                  <TableCell align="center" key={entry.id}>
-                    <Checkbox/>
+                  <TableCell align="center" key={`${participant.id}-${entry.id}`}>
+                    <ParticipationCheckbox calendar={props.calendar} participant={participant} entry={entry} />
                   </TableCell>
                 ))}
               </TableRow>

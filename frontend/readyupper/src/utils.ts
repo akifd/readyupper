@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'
 
 import config from './config'
-import { Calendar, Entry } from './interfaces'
+import { Calendar } from './interfaces'
 
 
 export function backendUrl(path: string) {
@@ -55,6 +55,30 @@ export function createParticipant(calendarId: string, name: string) {
 
 export function fetchParticipants(calendarId: string) {
   return axios.get(backendUrl("/participants/?calendar_id=" + calendarId))
+}
+
+
+export function fetchParticipation(calendarId: string, participantId: string, entryId: string) {
+    return axios.get(
+        backendUrl('/participations/'),
+        {params: {calendar_id: calendarId, participant_id: participantId, entry_id: entryId}}
+    )
+}
+
+
+export function createParticipation(calendarId: string, participantId: string, entryId: string) {
+    return axios.post(
+        backendUrl('/participations/'),
+        {calendar_id: calendarId, participant_id: participantId, entry_id: entryId}
+    )
+}
+
+
+export function deleteParticipation(participationId: string) {
+    return axios.delete(
+        backendUrl('/participations/'),
+        {params: {participation_id: participationId}}
+    )
 }
 
 

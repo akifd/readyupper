@@ -243,6 +243,29 @@ def test_update_inexistant_entry(test_client: TestClient):
     assert response.json() == {"detail": "Entry not found."}
 
 
+def test_get_participations(db: Session, test_client: TestClient, calendar: Calendar,
+                            entry: Entry, participant: Participant,
+                            participation: Participation):
+    response = test_client.get(
+        "/participations/",
+        params={"calendar_id": str(calendar.id),
+                "entry_id": str(entry.id),
+                "participant_id": str(participant.id)}
+    )
+    assert response.status_code == 200
+
+    data = response.json()
+    assert len(data) == 1
+
+    assert data[0].keys() == {"id", "calendar_id", "entry_id", "participant_id",
+                              "created"}
+    assert data[0]["id"] == str(participation.id)
+    assert data[0]["calendar_id"] == str(participation.calendar_id)
+    assert data[0]["entry_id"] == str(participation.entry_id)
+    assert data[0]["participant_id"] == str(participation.participant_id)
+    assert data[0]["created"] == participation.created.isoformat()
+
+
 def test_create_participation(db: Session, test_client: TestClient, calendar: Calendar,
                               entry: Entry, participant: Participant):
     response = test_client.post(

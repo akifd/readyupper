@@ -91,6 +91,17 @@ class EntryUpdate(BaseModel):
         orm_mode = True
 
 
+class Participation(BaseModel):
+    id: UUID
+    calendar_id: UUID
+    entry_id: UUID
+    participant_id: UUID
+    created: datetime = datetime.now
+
+    class Config:
+        orm_mode = True
+
+
 class ParticipationCreate(BaseModel):
     calendar_id: UUID
     entry_id: UUID
