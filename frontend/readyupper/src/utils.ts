@@ -75,10 +75,7 @@ export function createParticipation(calendarId: string, participantId: string, e
 
 
 export function deleteParticipation(participationId: string) {
-    return axios.delete(
-        backendUrl('/participations/'),
-        {params: {participation_id: participationId}}
-    )
+    return axios.delete(backendUrl(`/participations/${participationId}/`))
 }
 
 
